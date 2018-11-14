@@ -135,8 +135,7 @@ class MaterialPurchaseRequisition(models.Model):
                     if pur_order:
                         po_line_vals = {
                                         'product_id' : line.product_id.id,
-                                        'product_qty': line.qty,
-                                        'product_uom_qty': line.qty,                            
+                                        'product_qty': line.qty,                       
                                         'name' : line.description,
                                         'price_unit' : line.product_id.list_price,
                                         'date_planned' : datetime.now(),
@@ -154,8 +153,7 @@ class MaterialPurchaseRequisition(models.Model):
                         purchase_order = purchase_order_obj.create(vals)
                         po_line_vals = {
                                         'product_id' : line.product_id.id,
-                                        'product_qty': line.qty,
-                                        'product_uom_qty': line.qty,                                                        
+                                        'product_qty': line.qty,                                                 
                                         'name' : line.description,
                                         'price_unit' : line.product_id.list_price,
                                         'date_planned' : datetime.now(),
