@@ -294,12 +294,12 @@ class RequisitionLine(models.Model):
         self.uom_id = self.product_id.uom_id.id
         self.description = self.product_id.name
 
-    product_id = fields.Many2one('product.product',string="Product")
+    product_id = fields.Many2one('product.product',related='requisition_line_ids.product_id', string="Product")
     description = fields.Text(string="Description")
     qty = fields.Float(string="Quantity",default=1.0)
     uom_id = fields.Many2one('product.uom',string="Unit Of Measure")
     requisition_id = fields.Many2one('material.purchase.requisition',string="Requisition Line")
-    requisition_action = fields.Selection([('purchase_order','Purchase Order'),('internal_picking','Internal Picking')],string="Requisition Action")
+    requisition_action = fields.Selection([('purchase_order','Purchase Order'),('internal_picking','Internal Picking')],default='internal_picking',string="Requisition Action")
     vendor_id = fields.Many2many('res.partner',string="Vendors")
 
 class StockPicking(models.Model):      
