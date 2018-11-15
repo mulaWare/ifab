@@ -294,7 +294,7 @@ class RequisitionLine(models.Model):
         self.uom_id = self.product_id.uom_id.id
         self.description = self.product_id.name
 
-    product_id = fields.Many2one('product.product',related='requisition_line_ids.product_id', string="Product")
+    product_id = fields.Many2one('product.product', string="Product")
     description = fields.Text(string="Description")
     qty = fields.Float(string="Quantity",default=1.0)
     uom_id = fields.Many2one('product.uom',string="Unit Of Measure")
