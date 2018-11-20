@@ -2,3 +2,4 @@
 
 from . import models
 from . import payments
+from . import project
