@@ -28,7 +28,7 @@
         'views/views.xml',
         'views/templates.xml',
         'views/payments.xml',
-
+        'views/project.xml',
     ],
     # only loaded in demonstration mode
     'demo': [
