@@ -1,3 +1,4 @@
+
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
@@ -9,7 +10,7 @@
                 <xpath expr="//field[@name='user_id']" position="before">
                       <field name="description"/>
                       <field name="contract"/>
-
+                      <field name="study"/>
                       <field name="sample"/>
                       <field name="date_sign"/>
                       <field name="analytic_account_id"/>
