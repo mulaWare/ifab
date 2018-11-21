@@ -12,7 +12,6 @@
                       <field name="study"/>
                       <field name="sample"/>
                       <field name="date_sign"/>
-                      <field name="analytic_account_id"/>
                       <field name="code"/>
                 </xpath>
             </field>
