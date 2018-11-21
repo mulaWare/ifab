@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="project_ifab" model="ir.ui.view">
+            <field name="name">project.project_ifab</field>
+            <field name="model">project.project</field>
+            <field name="inherit_id" ref="project.edit_project"/>
+            <field name="arch" type="xml">
+                <xpath expr="//field[@name='user_id']" position="before">
+                      <field name="description"/>
+                      <field name="contract"/>
+                      <field name="study"/>
+                      <field name="sample"/>
+                      <field name="date_sign"/>
+                      <field name="code"/>
+                      <field name="analytic_account_id" invisible="0" required="0" can_create="false" can_write="false" modifiers="{&quot;column_invisible&quot;: false}"/>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
