@@ -151,7 +151,7 @@ class MaterialPurchaseRequisition(models.Model):
                                 'requisition_po_id' : self.id,
                                 'state' : 'draft'
                         }
-                        purchase_order = purchase_order_obj.create(vals)
+                        purchase_order = purchase_order_obj.sudo().create(vals)
                         po_line_vals = {
                                         'product_id' : line.product_id.id,
                                         'product_qty': line.qty,                                                 
@@ -161,7 +161,7 @@ class MaterialPurchaseRequisition(models.Model):
                                         'product_uom' : line.uom_id.id,
                                         'order_id' : purchase_order.id,
                         }
-                        purchase_order_line = purchase_order_line_obj.create(po_line_vals)
+                        purchase_order_line = purchase_order_line_obj.sudo().create(po_line_vals)
             else:
                 for vendor in line.vendor_id:
                     stock_picking_obj = self.env['stock.picking']
@@ -181,7 +181,7 @@ class MaterialPurchaseRequisition(models.Model):
                                         'location_dest_id' : self.employee_id.destination_location_id.id,
 
                         }
-                        stock_move = stock_move_obj.create(pic_line_val)
+                        stock_move = stock_move_obj.sudo().create(pic_line_val)
 
                     else:
                         val = {
@@ -192,7 +192,7 @@ class MaterialPurchaseRequisition(models.Model):
                                 'company_id': self.env.user.company_id.id,
                                 'requisition_picking_id' : self.id
                         }
-                        stock_picking = stock_picking_obj.create(val)
+                        stock_picking = stock_picking_obj.sudo().create(val)
                         pic_line_val = {
                                         'partner_id' : vendor.id,
                                         'name': line.product_id.name,
@@ -204,7 +204,7 @@ class MaterialPurchaseRequisition(models.Model):
                                         'picking_id' : stock_picking.id
 
                         }
-                        stock_move = stock_move_obj.create(pic_line_val)
+                        stock_move = stock_move_obj.sudo().create(pic_line_val)
 
         res = self.write({
                             'state':'po_created',
