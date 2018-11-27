@@ -142,7 +142,8 @@ class MaterialPurchaseRequisition(models.Model):
                                         'product_uom' : line.uom_id.id,
                                         'order_id' : pur_order.id,
                         }
-                        purchase_order_line = purchase_order_line_obj.create(po_line_vals)
+                        purchase_order_line = purchase_order_line_obj.sudo().create(po_line_vals)
+                        
                     else:
                         vals = {
                                 'partner_id' : vendor.id,
