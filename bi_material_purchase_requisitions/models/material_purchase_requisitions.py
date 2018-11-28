@@ -279,7 +279,7 @@ class MaterialPurchaseRequisition(models.Model):
                                 ('cancel','Cancel')],string='Stage',default="new")
     requisition_line_ids = fields.One2many('requisition.line','requisition_id',string="Requisition Line ID")    
     confirmed_by_id = fields.Many2one('res.users',string="Confirmed By")
-    department_manager_id = fields.Many2one('res.users',string="PM",readonly=True)
+    department_manager_id = fields.Many2one('res.users',string="PM")
     approved_by_id = fields.Many2one('res.users',string="Approved By")
     rejected_by = fields.Many2one('res.users',string="Rejected By")
     confirmed_date = fields.Date(string="Confirmed Date",readonly=True)
@@ -299,7 +299,7 @@ class MaterialPurchaseRequisition(models.Model):
         index=True,
         track_visibility='onchange',
         change_default=True)
-    pm_id = fields.Many2one('res.users',string="PM",readonly=True)
+    pm_id = fields.Many2one('res.users',string="PM")
     account_analytic_id = fields.Many2one('account.analytic.account', string='Analytic Account')
     analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags')
 
