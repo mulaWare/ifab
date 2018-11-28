@@ -257,7 +257,8 @@ class MaterialPurchaseRequisition(models.Model):
         res = {}
         if not self.project_id:
             return res
-        self.department_manager_id = self.project_id.user_id.id
+        self.pm_id = self.project_id.user_id.id
+        self.department_manager_id = self.project_id.user_id.id 
         self.account_analytic_id = self.project_id.analytic_account_id.id
         self.analytic_tag_ids = self.project_id.analytic_account_id.tag_ids.ids        
 
@@ -298,7 +299,8 @@ class MaterialPurchaseRequisition(models.Model):
         index=True,
         track_visibility='onchange',
         change_default=True)
-    account_analytic_id = fields.Many2one('account.analytic.account', string='Analytic Account',readonly=True)
+    pm_id = fields.Many2one('res.users',string="PM",readonly=True)
+    account_analytic_id = fields.Many2one('account.analytic.account', string='Analytic Account')
     analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags')
 
 
