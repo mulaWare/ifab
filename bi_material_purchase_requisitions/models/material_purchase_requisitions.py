@@ -258,8 +258,8 @@ class MaterialPurchaseRequisition(models.Model):
         if not self.project_id:
             return res
         self.department_manager_id = self.project_id.user_id.id
-        self.account_analytic_id = self.project_id.account_analytic_id.id
-        self.analytic_tag_ids = self.project_id.account_analytic_id.tag_ids.ids        
+        self.account_analytic_id = self.project_id.analytic_account_id.id
+        self.analytic_tag_ids = self.project_id.analytic_account_id.tag_ids.ids        
 
     sequence = fields.Char(string='Sequence', readonly=True,copy =False)
     employee_id = fields.Many2one('hr.employee',string="Employee",required=True)
