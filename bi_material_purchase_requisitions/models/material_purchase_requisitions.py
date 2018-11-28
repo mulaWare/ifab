@@ -306,8 +306,8 @@ class MaterialPurchaseRequisition(models.Model):
         index=True,
         track_visibility='onchange',
         change_default=True)
-    pm_id = fields.Many2one('res.users',string="PM",related='project_id.user_id')
-    account_analytic_id = fields.Many2one('account.analytic.account', string='Analytic Account',related='project_id.analytic_account_id')
+    pm_id = fields.Many2one('res.users',string="PM",related='project_id.user_id',readonly=True)
+    account_analytic_id = fields.Many2one('account.analytic.account', string='Analytic Account',related='project_id.analytic_account_id',readonly=True)
     analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags')
 
 
