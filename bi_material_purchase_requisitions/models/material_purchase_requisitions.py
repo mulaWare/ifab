@@ -138,6 +138,8 @@ class MaterialPurchaseRequisition(models.Model):
                                         'product_qty': line.qty,                       
                                         'name' : line.description,
                                         'price_unit' : line.product_id.list_price,
+                                        'account_analytic_id' : line.account_analytic_id.id,
+                                        'analytic_tag_ids' : line.analytic_tag_ids.ids,
                                         'date_planned' : datetime.now(),
                                         'product_uom' : line.uom_id.id,
                                         'order_id' : pur_order.id,
@@ -157,6 +159,8 @@ class MaterialPurchaseRequisition(models.Model):
                                         'product_qty': line.qty,                                                 
                                         'name' : line.description,
                                         'price_unit' : line.product_id.list_price,
+                                        'account_analytic_id' : line.account_analytic_id.id,
+                                        'analytic_tag_ids' : line.analytic_tag_ids.ids,                            
                                         'date_planned' : datetime.now(),
                                         'product_uom' : line.uom_id.id,
                                         'order_id' : purchase_order.id,
@@ -257,9 +261,6 @@ class MaterialPurchaseRequisition(models.Model):
         res = {}
         if not self.project_id:
             return res
-        self.pm_id = self.project_id.user_id.id
-        self.department_manager_id = self.project_id.user_id.id 
-        self.account_analytic_id = self.project_id.analytic_account_id.id
         self.analytic_tag_ids = self.project_id.analytic_account_id.tag_ids.ids        
 
     sequence = fields.Char(string='Sequence', readonly=True,copy =False)
@@ -292,15 +293,21 @@ class MaterialPurchaseRequisition(models.Model):
     internal_picking_id = fields.Many2one('stock.picking',string="Internal Picking")
     internal_picking_count = fields.Integer('Internal Picking', compute='_get_internal_picking_count')
     purchase_order_count = fields.Integer('Purchase Order', compute='_get_purchase_order_count')
-    company_id = fields.Many2one('res.company',string="Company")
+    company_id = fields.Many2one(
+        'res.company', 'Company',
+        default=lambda self: self.env.user.company_id.id, index=1)
+    currency_id = fields.Many2one(
+        'res.currency', 'Currency',
+        default=lambda self: self.env.user.company_id.currency_id.id,
+        required=True)
     project_id = fields.Many2one('project.project',
         string='Project',
         default=lambda self: self.env.context.get('default_project_id'),
         index=True,
         track_visibility='onchange',
         change_default=True)
-    pm_id = fields.Many2one('res.users',string="PM")
-    account_analytic_id = fields.Many2one('account.analytic.account', string='Analytic Account')
+    pm_id = fields.Many2one('res.users',string="PM",related='project_id.user_id')
+    account_analytic_id = fields.Many2one('account.analytic.account', string='Analytic Account',related='project_id.analytic_account_id')
     analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags')
 
 
