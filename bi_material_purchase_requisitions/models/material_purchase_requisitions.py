@@ -250,6 +250,16 @@ class MaterialPurchaseRequisition(models.Model):
         if not self.employee_id.destination_location_id:
             return 
         self.destination_location_id = self.employee_id.destination_location_id
+        
+    @api.multi
+    @api.onchange('project_id')
+    def onchange_project_id(self):
+        res = {}
+        if not self.project_id:
+            return res
+        self.department_manager_id = self.project_id.user_id.id
+        self.account_analytic_id = self.project_id.account_analytic_id.id
+        self.analytic_tag_ids = self.project_id.account_analytic_id.tag_ids.ids        
 
     sequence = fields.Char(string='Sequence', readonly=True,copy =False)
     employee_id = fields.Many2one('hr.employee',string="Employee",required=True)
@@ -260,15 +270,15 @@ class MaterialPurchaseRequisition(models.Model):
     requisition_deadline_date = fields.Date(string="Requisition Deadline")
     state = fields.Selection([
                                 ('new','New'),
-                                ('department_approval','Waiting Department Approval'),
-                                ('ir_approve','Waiting IR Approved'),
+                                ('department_approval','Waiting PM Approval'),
+                                ('ir_approve','Waiting Purchasement Approved'),
                                 ('approved','Approved'),
                                 ('po_created','Purchase Order Created'),
                                 ('received','Received'),
                                 ('cancel','Cancel')],string='Stage',default="new")
     requisition_line_ids = fields.One2many('requisition.line','requisition_id',string="Requisition Line ID")    
     confirmed_by_id = fields.Many2one('res.users',string="Confirmed By")
-    department_manager_id = fields.Many2one('res.users',string="Department Manager")
+    department_manager_id = fields.Many2one('res.users',string="PM",readonly=True)
     approved_by_id = fields.Many2one('res.users',string="Approved By")
     rejected_by = fields.Many2one('res.users',string="Rejected By")
     confirmed_date = fields.Date(string="Confirmed Date",readonly=True)
@@ -282,7 +292,13 @@ class MaterialPurchaseRequisition(models.Model):
     internal_picking_count = fields.Integer('Internal Picking', compute='_get_internal_picking_count')
     purchase_order_count = fields.Integer('Purchase Order', compute='_get_purchase_order_count')
     company_id = fields.Many2one('res.company',string="Company")
-    account_analytic_id = fields.Many2one('account.analytic.account', string='Analytic Account')
+    project_id = fields.Many2one('project.project',
+        string='Project',
+        default=lambda self: self.env.context.get('default_project_id'),
+        index=True,
+        track_visibility='onchange',
+        change_default=True)
+    account_analytic_id = fields.Many2one('account.analytic.account', string='Analytic Account',readonly=True)
     analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags')
 
 
