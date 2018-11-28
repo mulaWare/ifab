@@ -282,6 +282,9 @@ class MaterialPurchaseRequisition(models.Model):
     internal_picking_count = fields.Integer('Internal Picking', compute='_get_internal_picking_count')
     purchase_order_count = fields.Integer('Purchase Order', compute='_get_purchase_order_count')
     company_id = fields.Many2one('res.company',string="Company")
+    account_analytic_id = fields.Many2one('account.analytic.account', string='Analytic Account')
+    analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags')
+
 
 class RequisitionLine(models.Model):
     _name = "requisition.line"
@@ -294,6 +297,7 @@ class RequisitionLine(models.Model):
             return res
         self.uom_id = self.product_id.uom_id.id
         self.description = self.product_id.name
+        self.account_analytic_id = self.requisition_id.account_analytic_id.id
 
     product_id = fields.Many2one('product.product', string="Product")
     description = fields.Text(string="Description")
@@ -302,6 +306,9 @@ class RequisitionLine(models.Model):
     requisition_id = fields.Many2one('material.purchase.requisition',string="Requisition Line")
     requisition_action = fields.Selection([('purchase_order','Purchase Order'),('internal_picking','Internal Picking')],default='internal_picking',string="Requisition Action")
     vendor_id = fields.Many2many('res.partner',string="Vendors")
+    account_analytic_id = fields.Many2one('account.analytic.account', string='Analytic Account')
+    analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags')
+
 
 class StockPicking(models.Model):      
     _inherit = 'stock.picking'
