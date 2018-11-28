@@ -38,6 +38,8 @@
                             <field name="employee_id"/>
                             <field name="department_id"/>
                             <field name="requisition_responsible_id" />
+                            <field name="account_analytic_id"/>
+                            <field name="analytic_tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>                       
                         </group>
                         <group>
                             <field name="requisition_date"/>
@@ -52,6 +54,8 @@
                                 <tree string="Requisitions Lines" editable="bottom">
                                     <field name="requisition_action" groups="bi_material_purchase_requisitions.group_purchase_requisition_user,bi_material_purchase_requisitions.group_requisition_department_manager"/>
                                     <field name="product_id" />
+                                    <field name="account_analytic_id"/>
+                                    <field name="analytic_tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>                                 
                                     <field name="description" />
                                     <field name="qty" />
                                     <field name="uom_id" />
