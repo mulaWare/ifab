@@ -38,6 +38,8 @@
                             <field name="employee_id"/>
                             <field name="department_id"/>
                             <field name="requisition_responsible_id" />
+                            <field name="project_id"/>
+                            <field name="department_manager_id"/>
                             <field name="account_analytic_id"/>
                             <field name="analytic_tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>                       
                         </group>
@@ -109,6 +111,8 @@
                     <field name="requisition_responsible_id"/>
                     <field name="requisition_date"/>
                     <field name="state"/>
+                    <field name="project_id"/>
+                    <field name="department_manager_id"/>
                     <field name="account_analytic_id"/>
                     <field name="analytic_tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>             
                 </tree>
@@ -136,7 +140,7 @@
             <field name="arch" type="xml">
                 <tree string="Requisition Line">
                     <field name="requisition_action"/>
-                    <field name="product_id"/>
+                    <field name="product_id"/>                   
                     <field name="account_analytic_id"/>
                     <field name="analytic_tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>                                 
                     <field name="description"/>
