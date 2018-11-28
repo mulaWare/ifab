@@ -298,6 +298,7 @@ class RequisitionLine(models.Model):
         self.uom_id = self.product_id.uom_id.id
         self.description = self.product_id.name
         self.account_analytic_id = self.requisition_id.account_analytic_id.id
+        self.analytic_tag_ids = self.requisition_id.analytic_tag_ids.id
 
     product_id = fields.Many2one('product.product', string="Product")
     description = fields.Text(string="Description")
