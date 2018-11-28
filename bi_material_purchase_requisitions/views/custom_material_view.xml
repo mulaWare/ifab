@@ -39,8 +39,8 @@
                             <field name="department_id"/>
                             <field name="requisition_responsible_id" />
                             <field name="project_id"/>
-                            <field name="pm_id" on_change="0" can_create="false" can_write="false" modifiers="{&quot;column_invisible&quot;: true}"/>
-                            <field name="account_analytic_id" on_change="0" can_create="false" can_write="false" modifiers="{&quot;column_invisible&quot;: true}"/>
+                            <field name="pm_id" readonly="true"/>
+                            <field name="account_analytic_id" readonly="true"/>
                             <field name="analytic_tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>                       
                         </group>
                         <group>
