@@ -266,11 +266,11 @@ class MaterialPurchaseRequisition(models.Model):
 
     sequence = fields.Char(string='Sequence', readonly=True,copy =False)
     employee_id = fields.Many2one('hr.employee',string="Employee",required=True)
-    department_id = fields.Many2one('hr.department',string="Department",required=True,related='employee_id.department_id',readonly=True )
+    department_id = fields.Many2one('hr.department',string="Department",required=True)
     requisition_responsible_id  = fields.Many2one('res.users',string="Requisition Responsible")
-    requisition_date = fields.Date(string="Requisition Date",required=True, default=now())
+    requisition_date = fields.Date(string="Requisition Date",required=True)
     received_date = fields.Date(string="Received Date",readonly=True)
-    requisition_deadline_date = fields.Date(string="Requisition Deadline", default=now())
+    requisition_deadline_date = fields.Date(string="Requisition Deadline")
     state = fields.Selection([
                                 ('new','New'),
                                 ('department_approval','Waiting PM Approval'),
@@ -310,6 +310,7 @@ class MaterialPurchaseRequisition(models.Model):
     pm_id = fields.Many2one('res.users',string="PM",related='project_id.user_id',readonly=True)
     account_analytic_id = fields.Many2one('account.analytic.account', string='Analytic Account',related='project_id.analytic_account_id',readonly=True)
     analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags')
+
 
 class RequisitionLine(models.Model):
     _name = "requisition.line"
