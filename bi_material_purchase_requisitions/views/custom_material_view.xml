@@ -60,6 +60,8 @@
                                     <field name="analytic_tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
                                     <field name="description" />
                                     <field name="qty" />
+                                    <field name="qty_available" />
+                                    <field name="location_id" />
                                     <field name="uom_id" />
                                     <field name="vendor_id" widget="many2many_tags" groups="bi_material_purchase_requisitions.group_purchase_requisition_user,bi_material_purchase_requisitions.group_requisition_department_manager"/>
                                 </tree>
