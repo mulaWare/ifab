@@ -335,6 +335,7 @@ class RequisitionLine(models.Model):
     vendor_id = fields.Many2many('res.partner',string="Vendors")
     account_analytic_id = fields.Many2one('account.analytic.account', string='Analytic Account')
     analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags')
+    qty_available = fields.Float('product.product', string="Qty Available", readonly=True)
 
 
 class StockPicking(models.Model):
