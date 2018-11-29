@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <data> 
-    
+    <data>
+
         <record id="material_purchase_requisition_form_view" model="ir.ui.view">
             <field name="name">material.purchase.requisition.form.view</field>
             <field name="model">material.purchase.requisition</field>
@@ -41,13 +41,13 @@
                             <field name="project_id"/>
                             <field name="pm_id" on_change="0" can_create="false" can_write="false" modifiers="{&quot;column_invisible&quot;: true}"/>
                             <field name="account_analytic_id" on_change="0" can_create="false" can_write="false" modifiers="{&quot;column_invisible&quot;: true}"/>
-                            <field name="analytic_tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>                       
+                            <field name="analytic_tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
                         </group>
                         <group>
                             <field name="requisition_date"/>
                             <field name="received_date"/>
                             <field name="requisition_deadline_date"/>
-                            <field name="company_id"/>
+                            <field name="company_id" invisible="1"/>
                         </group>
                     </group>
                     <notebook>
@@ -57,10 +57,13 @@
                                     <field name="requisition_action" groups="bi_material_purchase_requisitions.group_purchase_requisition_user,bi_material_purchase_requisitions.group_requisition_department_manager"/>
                                     <field name="product_id" />
                                     <field name="account_analytic_id"/>
-                                    <field name="analytic_tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>                                 
+                                    <field name="analytic_tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
                                     <field name="description" />
                                     <field name="qty" />
                                     <field name="uom_id" />
+                                    <field name="qty_available"/>
+                                    <field name="supplier_taxes_id"/>
+                                    <field name="location_id"/>
                                     <field name="vendor_id" widget="many2many_tags" groups="bi_material_purchase_requisitions.group_purchase_requisition_user,bi_material_purchase_requisitions.group_requisition_department_manager"/>
                                 </tree>
                             </field>
@@ -96,10 +99,10 @@
                     <label for="reason_for_requisition"/>
                     <field name="reason_for_requisition"/>
                 </sheet>
-                </form>    
+                </form>
             </field>
         </record>
-    
+
         <record id="material_purchase_requisition_tree_view" model="ir.ui.view">
             <field name="name">material.purchase.requisition.tree.view</field>
             <field name="model">material.purchase.requisition</field>
@@ -113,11 +116,11 @@
                     <field name="project_id"/>
                     <field name="pm_id"/>
                     <field name="account_analytic_id"/>
-                    <field name="analytic_tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>             
+                    <field name="analytic_tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
                 </tree>
             </field>
         </record>
-    
+
         <record id="action_material_purchase_requisition" model="ir.actions.act_window">
             <field name="name">Purchase Requisition</field>
             <field name="type">ir.actions.act_window</field>
@@ -125,7 +128,7 @@
             <field name="view_type">form</field>
             <field name="view_mode">tree,form</field>
         </record>
-        
+
         <record id="material_purchase_requisition" model="ir.sequence">
             <field name="name">Purchase Requisition</field>
             <field name="code">material.purchase.requisition</field>
@@ -139,9 +142,9 @@
             <field name="arch" type="xml">
                 <tree string="Requisition Line">
                     <field name="requisition_action"/>
-                    <field name="product_id"/>                   
+                    <field name="product_id"/>
                     <field name="account_analytic_id"/>
-                    <field name="analytic_tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>                                 
+                    <field name="analytic_tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
                     <field name="description"/>
                     <field name="qty"/>
                     <field name="uom_id"/>
@@ -149,7 +152,7 @@
                 </tree>
             </field>
         </record>
-        
+
         <record id="inherit_bi_hr_employee_form" model="ir.ui.view">
             <field name="name">inherit.bi.hr.employee.form</field>
             <field name="model">hr.employee</field>
@@ -174,7 +177,7 @@
                     <field name="destination_location_id"/>
                 </field>
             </field>
-        </record>        
+        </record>
 
         <menuitem id="menu_requisition"
           name="Requisitions"
@@ -183,13 +186,13 @@
         <menuitem id="menu_purchase_requisition"
           name="Purchase Requisition"
           parent="menu_requisition"
-          sequence="1"/>        
+          sequence="1"/>
 
         <menuitem id="menu_sub_purchase_requisition"
           name="Purchase Requisition"
           parent="menu_purchase_requisition"
           action="action_material_purchase_requisition"
           sequence="1"/>
-               
+
     </data>
 </odoo>
