@@ -139,13 +139,12 @@ class MaterialPurchaseRequisition(models.Model):
                                         'name' : line.description,
                                         'price_unit' : line.product_id.list_price,
                                         'account_analytic_id' : line.account_analytic_id.id,
-                                        'analytic_tag_ids' : (6,0,[line.analytic_tag_ids.ids]),
+                                        'analytic_tag_ids': [(4, x) for x in line.analytic_tag_ids.ids],
                                         'date_planned' : datetime.now(),
                                         'product_uom' : line.uom_id.id,
                                         'order_id' : pur_order.id,
                         }
                         purchase_order_line = purchase_order_line_obj.sudo().create(po_line_vals)
-                        purchase_order_line['analytic_tag_ids'] = [(6,0,[line.analytic_tag_ids.ids])]
                         
                     else:
                         vals = {
@@ -161,13 +160,12 @@ class MaterialPurchaseRequisition(models.Model):
                                         'name' : line.description,
                                         'price_unit' : line.product_id.list_price,
                                         'account_analytic_id' : line.account_analytic_id.id,
-                                        'analytic_tag_ids' : (6,0,[line.analytic_tag_ids.ids]),                            
+                                        'analytic_tag_ids': [(4, x) for x in line.analytic_tag_ids.ids],                         
                                         'date_planned' : datetime.now(),
                                         'product_uom' : line.uom_id.id,
                                         'order_id' : purchase_order.id,
                         }
                         purchase_order_line = purchase_order_line_obj.sudo().create(po_line_vals) 
-                        purchase_order_line['analytic_tag_ids'] = [(6,0,[line.analytic_tag_ids.ids])]
                         
             else:
                 for vendor in line.vendor_id:
