@@ -326,6 +326,18 @@ class RequisitionLine(models.Model):
         self.account_analytic_id = self.requisition_id.account_analytic_id.id
         self.analytic_tag_ids = self.requisition_id.analytic_tag_ids.ids
 
+    @api.multi
+    @api.onchange('qty_available')
+    def compute_location(self):
+        res = {}
+        if not self.qty_available:
+            return res
+        quant_id = self.env['stock.quant'].search(
+                    [('product_id', '=', self.product_id and 'location_id.usage', "=", 'internal')],
+                    limit=1)
+        location = quant_id.location_id
+        return location
+
     product_id = fields.Many2one('product.product', string="Product")
     description = fields.Text(string="Description")
     qty = fields.Float(string="Quantity",default=1.0)
@@ -336,7 +348,7 @@ class RequisitionLine(models.Model):
     account_analytic_id = fields.Many2one('account.analytic.account', string='Analytic Account')
     analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags')
     qty_available = fields.Float(string="Qty Available",related='product_id.qty_available',readonly=True)
-    location_id = fields.Many2one('stock.location', string='Location', auto_join=True, ondelete='restrict', readonly=True, related='product_id.location_id')
+    location_id = fields.Many2one('stock.location', string='Location', auto_join=True, ondelete='restrict', readonly=True, compute="compute_location")
 
 
 class StockPicking(models.Model):
