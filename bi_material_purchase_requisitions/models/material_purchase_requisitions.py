@@ -332,9 +332,9 @@ class RequisitionLine(models.Model):
         res = {}
         if not self.qty_available:
             return res
-        location = self.product_id.stock_quant_ids[1].location_id
+        location = self.product_id.stock_quant_ids[1].location_id.id
         return location
-        
+
     product_id = fields.Many2one('product.product', string="Product")
     description = fields.Text(string="Description")
     qty = fields.Float(string="Quantity",default=1.0)
