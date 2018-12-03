@@ -191,7 +191,7 @@ class MaterialPurchaseRequisition(models.Model):
                     else:
                         val = {
                                 'partner_id' : vendor.id,
-                                'location_id'  : self.employee_id.destination_location_id.id,
+                                'location_id'  : line.location_id.id,
                                 'location_dest_id' : self.employee_id.destination_location_id.id,
                                 'picking_type_id' : picking_type_ids[0].id,
                                 'company_id': self.env.user.company_id.id,
