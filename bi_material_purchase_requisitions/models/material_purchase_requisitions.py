@@ -335,7 +335,7 @@ class RequisitionLine(models.Model):
         quant_id = self.env['stock.quant'].search(
                     [('product_id', '=', self.product_id.id )],
                     limit=1)
-        location = quant_id.location_id
+        location = quant_id.location_id.id
         return location
 
     product_id = fields.Many2one('product.product', string="Product")
