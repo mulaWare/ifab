@@ -325,8 +325,10 @@ class RequisitionLine(models.Model):
         self.description = self.product_id.name
         self.account_analytic_id = self.requisition_id.account_analytic_id.id
         self.analytic_tag_ids = self.requisition_id.analytic_tag_ids.ids
-        inventory =  self.env['stock.inventory'].search(['&',('product_id','=',self.product_id.id),('location_id.usage','like', 'internal')], limit=1)
-        self.location_id = inventory.location_id
+        inventories =  self.env['stock.inventory'].search([('product_id','=',self.product_id.id)])
+        for i in inventories:
+            if i.location_id.usage == 'internal':
+                self.location_id = i.location_id
 
     product_id = fields.Many2one('product.product', string="Product")
     description = fields.Text(string="Description")
