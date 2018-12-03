@@ -326,7 +326,7 @@ class RequisitionLine(models.Model):
         self.account_analytic_id = self.requisition_id.account_analytic_id.id
         self.analytic_tag_ids = self.requisition_id.analytic_tag_ids.ids
         inventory =  self.env['stock.inventory.line'].search(['&',('product_id','=',self.product_id.id),('location_id.usage','=', 'internal')], limit=1)
-        self.location_id = inventory.location_id
+        self.location_id = inventory.location_id.id
 
 
     product_id = fields.Many2one('product.product', string="Product")
