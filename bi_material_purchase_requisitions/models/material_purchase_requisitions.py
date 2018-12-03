@@ -332,7 +332,7 @@ class RequisitionLine(models.Model):
         res = {}
         if not self.qty_available:
             return res
-        for x in self.product_id.stock_quant_ids.ids:
+        for x in self.product_id.stock_quant_ids:
             if x.location_id.usage == 'internal':
                 location = x.location_id.id
                 return location
