@@ -333,7 +333,7 @@ class RequisitionLine(models.Model):
         if not self.qty_available:
             return res
         quant_id = self.env['stock.quant'].search(
-                    [('product_id', '=', self.product_id )],
+                    [('product_id', '=', self.product_id.id )],
                     limit=1)
         location = quant_id.location_id
         return location
