@@ -325,7 +325,7 @@ class RequisitionLine(models.Model):
         self.description = self.product_id.name
         self.account_analytic_id = self.requisition_id.account_analytic_id.id
         self.analytic_tag_ids = self.requisition_id.analytic_tag_ids.ids
-        self.location_id = self.mapped('product_id.stock_quant_ids').filtered(lambda u: u.location_id.usage = 'internal').browse(location_id)
+        self.location_id = self.mapped('product_id.stock_quant_ids').filtered(lambda u: u.product_id.stock_quant_ids.location_id.usage = 'internal').browse(location_id)
 
     product_id = fields.Many2one('product.product', string="Product")
     description = fields.Text(string="Description")
