@@ -266,7 +266,7 @@ class MaterialPurchaseRequisition(models.Model):
 
     sequence = fields.Char(string='Sequence', readonly=True,copy =False)
     employee_id = fields.Many2one('hr.employee',string="Employee",required=True)
-    department_id = fields.Many2one('hr.department',string="Department",required=True)
+    department_id = fields.Many2one('hr.department',string="Department",required=True, related='department_id', readonly=1)
     requisition_responsible_id  = fields.Many2one('res.users',string="Requisition Responsible")
     requisition_date = fields.Date(string="Requisition Date",required=True)
     received_date = fields.Date(string="Received Date",readonly=True)
@@ -296,7 +296,7 @@ class MaterialPurchaseRequisition(models.Model):
     purchase_order_count = fields.Integer('Purchase Order', compute='_get_purchase_order_count')
     company_id = fields.Many2one(
         'res.company', 'Company',
-        default=lambda self: self.env.user.company_id.id, index=1)
+        default=lambda self: self.env.user.company_id.id, index=1, readonly=1)
     currency_id = fields.Many2one(
         'res.currency', 'Currency',
         default=lambda self: self.env.user.company_id.currency_id.id,
