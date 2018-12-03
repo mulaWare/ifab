@@ -182,7 +182,7 @@ class MaterialPurchaseRequisition(models.Model):
                                         'product_uom_qty' : line.qty,
                                         'picking_id' : stock_picking.id,
                                         'product_uom' : line.uom_id.id,
-                                        'location_id': self.employee_id.destination_location_id.id,
+                                        'location_id': self.location_id.id,
                                         'location_dest_id' : self.employee_id.destination_location_id.id,
 
                         }
@@ -204,7 +204,7 @@ class MaterialPurchaseRequisition(models.Model):
                                         'product_id' : line.product_id.id,
                                         'product_uom_qty' : line.qty,
                                         'product_uom' : line.uom_id.id,
-                                        'location_id': self.employee_id.destination_location_id.id,
+                                        'location_id': self.location_id.id,
                                         'location_dest_id' : self.employee_id.destination_location_id.id,
                                         'picking_id' : stock_picking.id
 
