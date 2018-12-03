@@ -334,7 +334,7 @@ class RequisitionLine(models.Model):
             return res
         for x in self.product_id.stock_quant_ids.ids:
             if x.location_id.usage == 'internal':
-                location = location_id.id
+                location = x.location_id.id
                 return location
 
     product_id = fields.Many2one('product.product', string="Product")
