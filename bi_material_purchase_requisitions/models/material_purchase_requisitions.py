@@ -328,6 +328,17 @@ class RequisitionLine(models.Model):
         inventory =  self.env['stock.inventory.line'].search(['&',('product_id','=',self.product_id.id),('location_id.usage','=', 'internal')], limit=1)
         self.location_id = inventory.location_id.id
 
+    @api.multi
+    @api.onchange('requisition_action')
+    def onchange_requisition_action(self):
+        res = {}
+        if not self.requisition_action:
+            return res
+        if self.requisition_action == 'internal_picking':
+            self.vendor_id = self.company_id.partner_id.id
+        if self.requisition_action == 'purchase_order':
+            self.vendor_id = self.product_id.seller_ids.ids
+
 
     product_id = fields.Many2one('product.product', string="Product")
     description = fields.Text(string="Description")
