@@ -329,7 +329,7 @@ class RequisitionLine(models.Model):
         self.location_id = inventory.location_id.id
 
     @api.multi
-    @api.onchange('requisition_action')
+    @api.onchange('requisition_action','product_id')
     def onchange_requisition_action(self):
         res = {}
         if not self.requisition_action:
