@@ -316,7 +316,7 @@ class RequisitionLine(models.Model):
     _name = "requisition.line"
 
     @api.multi
-    @api.onchange('product_id')
+    @api.onchange('product_id','requisition_action',)
     def onchange_product_id(self):
         res = {}
         if not self.product_id:
@@ -333,14 +333,6 @@ class RequisitionLine(models.Model):
                 record['vendor_id'] = [(4, x) for x in self.env['material.purchase.requisition'].company_id.partner_id.ids]
             if record.requisition_action == 'purchase_order':
                 record['vendor_id'] = [(4, x) for x in record.product_id.seller_ids.ids]
-
-
-    @api.multi
-    @api.onchange('requisition_action','product_id')
-    def onchange_requisition_action(self):
-        res = {}
-        if not self.requisition_action:
-            return res
 
 
     product_id = fields.Many2one('product.product', string="Product")
