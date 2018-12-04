@@ -330,11 +330,14 @@ class RequisitionLine(models.Model):
 
         for record in self:
             if record.requisition_action == 'internal_picking':
-                x = []
-                x = self.env['material.purchase.requisition'].company_id.partner_id.id
-                record['vendor_id'] = [(4, x)]
+                self.write({
+                            'vendor_id' : [(4, self.env['material.purchase.requisition'].company_id.partner_id.id)],
+                          })
+
             if record.requisition_action == 'purchase_order':
-                record['vendor_id'] = [(4, x) for x in record.product_id.seller_ids.ids]
+                self.write({
+                            'vendor_id' : [(4, x) for x in record.product_id.seller_ids.ids],
+                          })
 
 
     product_id = fields.Many2one('product.product', string="Product")
