@@ -327,10 +327,12 @@ class RequisitionLine(models.Model):
         self.analytic_tag_ids = self.requisition_id.analytic_tag_ids.ids
         inventory =  self.env['stock.inventory.line'].search(['&',('product_id','=',self.product_id.id),('location_id.usage','=', 'internal')], limit=1)
         self.location_id = inventory.location_id.id
-        if self.requisition_action == 'internal_picking':
-            self.vendor_id = self.env['material.purchase.requisition'].company_id.partner_id.ids
-        if self.requisition_action == 'purchase_order':
-            self.vendor_id = [(4, x) for x in self.product_id.seller_ids.ids]
+
+        for record in self:
+            if record.requisition_action == 'internal_picking':
+                record['vendor_id'] = [(4, x) for x in self.env['material.purchase.requisition'].company_id.partner_id.ids]
+            if record.requisition_action == 'purchase_order':
+                record['vendor_id'] = [(4, x) for x in record.product_id.seller_ids.ids]
 
 
     @api.multi
