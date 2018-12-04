@@ -330,7 +330,8 @@ class RequisitionLine(models.Model):
 
         for record in self:
             if record.requisition_action == 'internal_picking':
-                record['vendor_id'] = [(4, x) for x in self.env['material.purchase.requisition'].company_id.partner_id]
+                x = {self.env['material.purchase.requisition'].company_id.partner_id.id}
+                record['vendor_id'] = [(4, x)]
             if record.requisition_action == 'purchase_order':
                 record['vendor_id'] = [(4, x) for x in record.product_id.seller_ids.ids]
 
