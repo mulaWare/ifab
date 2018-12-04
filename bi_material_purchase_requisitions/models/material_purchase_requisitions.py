@@ -335,7 +335,7 @@ class RequisitionLine(models.Model):
         if not self.requisition_action:
             return res
         if self.requisition_action == 'internal_picking':
-            self.vendor_id = self.company_id.partner_id.id
+            self.vendor_id = [(6,0, x) for x in self.company_id.partner_id.id]
         if self.requisition_action == 'purchase_order':
             self.vendor_id = self.product_id.seller_ids.ids
 
