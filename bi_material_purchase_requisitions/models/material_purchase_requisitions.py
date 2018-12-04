@@ -330,10 +330,11 @@ class RequisitionLine(models.Model):
 
         for record in self:
             if record.requisition_action == 'internal_picking':
-                record.vendor_id = self.env['material.purchase.requisition'].browse(company_id.partner_id)
+                partners = self.env['material.purchase.requisition'].company_id.partner_id.id
+                record.vendor_id = self.env['res.partner'].browse(partners)
             if record.requisition_action == 'purchase_order':
-                record.vendor_id = record.product_id.browse(seller_ids)
-
+                partners = record.product_id.seller_ids.mapped()
+                record.vendor_id = self.env['res.partner'].browse(partners)
 
 
     product_id = fields.Many2one('product.product', string="Product")
