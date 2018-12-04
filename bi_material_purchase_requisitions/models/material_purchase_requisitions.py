@@ -333,7 +333,7 @@ class RequisitionLine(models.Model):
                 partners = self.env['material.purchase.requisition'].company_id.partner_id.id
                 record.vendor_id = self.env['res.partner'].browse(partners)
             if record.requisition_action == 'purchase_order':
-                partners = record.product_id.seller_ids.mapped()
+                partners = record.product_id.mapped(seller_ids)
                 record.vendor_id = self.env['res.partner'].browse(partners)
 
 
