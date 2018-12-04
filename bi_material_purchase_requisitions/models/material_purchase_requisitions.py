@@ -335,9 +335,10 @@ class RequisitionLine(models.Model):
         if not self.requisition_action:
             return res
         if self.requisition_action == 'internal_picking':
-            self.vendor_id = [(6,0, x) for x in self.env['material.purchase.requisition'].company_id.partner_id.id]
+            self.vendor_id = [(5)]
+            self.vendor_id = [(4, self.env['material.purchase.requisition'].company_id.partner_id.id)]
         if self.requisition_action == 'purchase_order':
-            self.vendor_id = [(6,0, x) for x in self.product_id.seller_ids.ids]
+            self.vendor_id = [(4, x) for x in self.product_id.seller_ids.ids]
 
 
     product_id = fields.Many2one('product.product', string="Product")
