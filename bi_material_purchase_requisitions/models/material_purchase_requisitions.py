@@ -332,7 +332,7 @@ class RequisitionLine(models.Model):
             if record.requisition_action == 'internal_picking':
                 record.vendor_id = self.env['material.purchase.requisition'].company_id.partner_id.id
             if record.requisition_action == 'purchase_order':
-                record.vendor_id = record.product_id.seller_ids.ids
+                record.vendor_id = record.product_id.seller_ids.name.id
 
 
     product_id = fields.Many2one('product.product', string="Product")
