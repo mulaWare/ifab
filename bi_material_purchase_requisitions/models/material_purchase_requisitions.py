@@ -6,6 +6,7 @@ import odoo.addons.decimal_precision as dp
 from datetime import datetime, timedelta
 import math
 from odoo.tools.misc import formatLang
+from odoo.exceptions import UserError, AccessError
 
 class MaterialPurchaseRequisition(models.Model):
     _name = "material.purchase.requisition"
