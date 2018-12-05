@@ -330,8 +330,8 @@ class RequisitionLine(models.Model):
 
         for record in self:
             if record.requisition_action == 'internal_picking':
-                partner = self.env['material.purchase.requisition'].company_id.partner_id
-                vendor = self.env['res.partner'].browse(partner)
+                partner = self.env['material.purchase.requisition'].company_id.partner_id.id
+                vendor = self.env['res.partner'].browse([partner])
                 record.vendor_id = vendor
             if record.requisition_action == 'purchase_order':
                 record.vendor_id = record.product_id.seller_ids.mapped('name')
