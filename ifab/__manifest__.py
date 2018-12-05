@@ -30,7 +30,6 @@
         'views/payments.xml',
         'views/project.xml',
         'views/purchase.xml',
-
     ],
     # only loaded in demonstration mode
     'demo': [
