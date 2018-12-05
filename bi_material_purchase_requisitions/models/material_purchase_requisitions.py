@@ -335,7 +335,7 @@ class RequisitionLine(models.Model):
             if record.requisition_action == 'internal_picking':
                 partner = self.env['material.purchase.requisition'].company_id.partner_id.id
                 vendor = self.env['res.partner'].browse(partner)
-                raise UserError(_('Message \'%s\'.') % (vendor,))
+                raise UserError(_('Message \'%s\ \'%s\'.') % (vendor,partner))
                 record.vendor_id = vendor
             if record.requisition_action == 'purchase_order':
                 record.vendor_id = record.product_id.seller_ids.mapped('name')
