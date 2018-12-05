@@ -157,11 +157,12 @@ class MaterialPurchaseRequisition(models.Model):
                                 'state' : 'draft',
                                 'origin' : self.sequence,
                                 'project_id' : self.project_id.id,
-                                'pm_id': self.pm_id.id,                                                            
+                                'pm_id': self.pm_id.id,
                                 'account_analytic_id' : self.account_analytic_id.id,
                                 'analytic_tag_ids': [(4, x) for x in self.analytic_tag_ids.ids],
                         }
                         purchase_order = purchase_order_obj.sudo().create(vals)
+                        purchase_order_obj.onchange_partner_id()
                         po_line_vals = {
                                         'product_id' : line.product_id.id,
                                         'product_qty': line.qty,
