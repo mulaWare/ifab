@@ -154,7 +154,12 @@ class MaterialPurchaseRequisition(models.Model):
                                 'partner_id' : vendor.id,
                                 'date_order' : datetime.now(),
                                 'requisition_po_id' : self.id,
-                                'state' : 'draft'
+                                'state' : 'draft',
+                                'origin' : self.sequence,
+                                'project_id' : self.project_id.id,
+                                'pm_id': self.pm_id.id,                                                            
+                                'account_analytic_id' : self.account_analytic_id.id,
+                                'analytic_tag_ids': [(4, x) for x in self.analytic_tag_ids.ids],
                         }
                         purchase_order = purchase_order_obj.sudo().create(vals)
                         po_line_vals = {
@@ -198,7 +203,8 @@ class MaterialPurchaseRequisition(models.Model):
                                 'location_dest_id' : self.employee_id.destination_location_id.id,
                                 'picking_type_id' : picking_type_ids[0].id,
                                 'company_id': self.env.user.company_id.id,
-                                'requisition_picking_id' : self.id
+                                'requisition_picking_id' : self.id,
+                                'origin' : self.sequence,
                         }
                         stock_picking = stock_picking_obj.sudo().create(val)
                         pic_line_val = {

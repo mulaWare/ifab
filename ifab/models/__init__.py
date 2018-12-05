@@ -4,3 +4,4 @@ from . import models
 from . import project
 from . import payments
 from . import account_invoice
+from . import purchase
