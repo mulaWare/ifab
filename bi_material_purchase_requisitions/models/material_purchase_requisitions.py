@@ -5,10 +5,12 @@ from odoo import api, fields, models, tools, _
 import odoo.addons.decimal_precision as dp
 from datetime import datetime, timedelta
 import math
+from odoo.tools.misc import formatLang
 
 class MaterialPurchaseRequisition(models.Model):
     _name = "material.purchase.requisition"
     _rec_name = 'sequence'
+    _inherit = ['mail.thread', 'mail.activity.mixin', 'portal.mixin']
 
     @api.model
     def create(self , vals):
@@ -331,8 +333,8 @@ class RequisitionLine(models.Model):
         for record in self:
             if record.requisition_action == 'internal_picking':
                 partner = self.env['material.purchase.requisition'].company_id.partner_id.id
-                record.qty = partner
-                vendor = self.env['res.partner'].browse([partner])
+                vendor = self.env['res.partner'].browse(partner)
+                raise UserError(_('Message \'%s\'.') % (vendor,))
                 record.vendor_id = vendor
             if record.requisition_action == 'purchase_order':
                 record.vendor_id = record.product_id.seller_ids.mapped('name')
