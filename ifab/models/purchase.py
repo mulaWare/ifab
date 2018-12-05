@@ -33,3 +33,17 @@ class PurchaseOrder(models.Model):
     pm_id = fields.Many2one('res.users',string="PM",related='project_id.user_id',readonly=True)
     account_analytic_id = fields.Many2one('account.analytic.account', string='Analytic Account',related='project_id.analytic_account_id',readonly=True)
     analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags')
+
+class PurchaseOrderLine(models.Model):
+    _name = 'purchase.order.line'
+    _inherit = "purchase.order.line"
+
+
+    @api.multi
+    @api.onchange('product_id',)
+    def onchange_product_id_ana(self):
+        res = {}
+        if not self.product_id:
+            return res
+        self.account_analytic_id = self.order_id.account_analytic_id.id
+        self.analytic_tag_ids = self.order_id.analytic_tag_ids.ids
