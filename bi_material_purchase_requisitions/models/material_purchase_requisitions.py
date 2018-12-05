@@ -152,6 +152,7 @@ class MaterialPurchaseRequisition(models.Model):
                     else:
                         vals = {
                                 'partner_id' : vendor.id,
+                                'company_id' : self.env.user.company_id.id,
                                 'date_order' : datetime.now(),
                                 'requisition_po_id' : self.id,
                                 'state' : 'draft',
