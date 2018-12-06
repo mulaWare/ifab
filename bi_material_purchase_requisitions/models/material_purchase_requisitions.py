@@ -282,7 +282,7 @@ class MaterialPurchaseRequisition(models.Model):
     requisition_responsible_id  = fields.Many2one('res.users',string="Requisition Responsible")
     requisition_date = fields.Date(string="Requisition Date",required=True)
     received_date = fields.Date(string="Received Date",readonly=True)
-    requisition_deadline_date = fields.Date(string="Requisition Deadline")
+    requisition_deadline_date = fields.Date(string="Requisition Deadline", default=now())
     state = fields.Selection([
                                 ('new','New'),
                                 ('department_approval','Waiting PM Approval'),
