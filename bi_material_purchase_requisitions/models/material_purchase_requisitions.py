@@ -143,7 +143,7 @@ class MaterialPurchaseRequisition(models.Model):
                                         'price_unit' : line.product_id.list_price,
                                         'account_analytic_id' : line.account_analytic_id.id,
                                         'analytic_tag_ids': [(4, x) for x in line.analytic_tag_ids.ids],
-                                        'date_planned' : datetime.now(),
+                                        'date_planned' : self.requisition_deadline_date,
                                         'product_uom' : line.uom_id.id,
                                         'order_id' : pur_order.id,
                         }
@@ -172,7 +172,7 @@ class MaterialPurchaseRequisition(models.Model):
                                         'price_unit' : line.product_id.list_price,
                                         'account_analytic_id' : line.account_analytic_id.id,
                                         'analytic_tag_ids': [(4, x) for x in line.analytic_tag_ids.ids],
-                                        'date_planned' : datetime.now(),
+                                        'date_planned' : self.requisition_deadline_date,
                                         'product_uom' : line.uom_id.id,
                                         'order_id' : purchase_order.id,
                         }
