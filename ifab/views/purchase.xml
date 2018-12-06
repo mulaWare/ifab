@@ -20,7 +20,7 @@
             <field name="model">purchase.requisition</field>
             <field name="inherit_id" ref="purchase.view_purchase_requisition_form"/>
             <field name="arch" type="xml">
-              <xpath "//field[@name='currency_id']" position="before">
+              <xpath expr="//field[@name='currency_id']" position="before">
                   <field name="project_id"/>
                   <field name="pm_id" on_change="0" can_create="false" can_write="false" modifiers="{&quot;column_invisible&quot;: true}"/>
                   <field name="account_analytic_id" on_change="0" can_create="false" can_write="false" modifiers="{&quot;column_invisible&quot;: true}"/>
