@@ -5,10 +5,13 @@ from odoo import api, fields, models, tools, _
 import odoo.addons.decimal_precision as dp
 from datetime import datetime, timedelta
 import math
+from odoo.tools.misc import formatLang
+from odoo.exceptions import UserError, AccessError
 
 class MaterialPurchaseRequisition(models.Model):
     _name = "material.purchase.requisition"
     _rec_name = 'sequence'
+    _inherit = ['mail.thread', 'mail.activity.mixin', 'portal.mixin']
 
     @api.model
     def create(self , vals):
@@ -140,20 +143,28 @@ class MaterialPurchaseRequisition(models.Model):
                                         'price_unit' : line.product_id.list_price,
                                         'account_analytic_id' : line.account_analytic_id.id,
                                         'analytic_tag_ids': [(4, x) for x in line.analytic_tag_ids.ids],
-                                        'date_planned' : datetime.now(),
+                                        'date_planned' : self.requisition_deadline_date,
                                         'product_uom' : line.uom_id.id,
                                         'order_id' : pur_order.id,
                         }
                         purchase_order_line = purchase_order_line_obj.sudo().create(po_line_vals)
+                        purchase_order_line.onchange_product_id()
 
                     else:
                         vals = {
                                 'partner_id' : vendor.id,
+                                'company_id' : self.env.user.company_id.id,
                                 'date_order' : datetime.now(),
                                 'requisition_po_id' : self.id,
-                                'state' : 'draft'
+                                'state' : 'draft',
+                                'origin' : self.sequence,
+                                'project_id' : self.project_id.id,
+                                'pm_id': self.pm_id.id,
+                                'account_analytic_id' : self.account_analytic_id.id,
+                                'analytic_tag_ids': [(4, x) for x in self.analytic_tag_ids.ids],
                         }
                         purchase_order = purchase_order_obj.sudo().create(vals)
+                        purchase_order.onchange_partner_id()
                         po_line_vals = {
                                         'product_id' : line.product_id.id,
                                         'product_qty': line.qty,
@@ -161,12 +172,12 @@ class MaterialPurchaseRequisition(models.Model):
                                         'price_unit' : line.product_id.list_price,
                                         'account_analytic_id' : line.account_analytic_id.id,
                                         'analytic_tag_ids': [(4, x) for x in line.analytic_tag_ids.ids],
-                                        'date_planned' : datetime.now(),
+                                        'date_planned' : self.requisition_deadline_date,
                                         'product_uom' : line.uom_id.id,
                                         'order_id' : purchase_order.id,
                         }
                         purchase_order_line = purchase_order_line_obj.sudo().create(po_line_vals)
-
+                        purchase_order_line.onchange_product_id()
             else:
                 for vendor in line.vendor_id:
                     stock_picking_obj = self.env['stock.picking']
@@ -195,7 +206,8 @@ class MaterialPurchaseRequisition(models.Model):
                                 'location_dest_id' : self.employee_id.destination_location_id.id,
                                 'picking_type_id' : picking_type_ids[0].id,
                                 'company_id': self.env.user.company_id.id,
-                                'requisition_picking_id' : self.id
+                                'requisition_picking_id' : self.id,
+                                'origin' : self.sequence,
                         }
                         stock_picking = stock_picking_obj.sudo().create(val)
                         pic_line_val = {
@@ -270,7 +282,7 @@ class MaterialPurchaseRequisition(models.Model):
     requisition_responsible_id  = fields.Many2one('res.users',string="Requisition Responsible")
     requisition_date = fields.Date(string="Requisition Date",required=True)
     received_date = fields.Date(string="Received Date",readonly=True)
-    requisition_deadline_date = fields.Date(string="Requisition Deadline")
+    requisition_deadline_date = fields.Date(string="Requisition Deadline", default=fields.Datetime.now)
     state = fields.Selection([
                                 ('new','New'),
                                 ('department_approval','Waiting PM Approval'),
@@ -330,14 +342,11 @@ class RequisitionLine(models.Model):
 
         for record in self:
             if record.requisition_action == 'internal_picking':
-                self.write({
-                            'vendor_id' : [(4, self.env['material.purchase.requisition'].company_id.partner_id.id)]
-                          })
-
+                partner = self.env.user.partner_id.id
+                vendor = self.env['res.partner'].browse(partner)
+                record.vendor_id = vendor
             if record.requisition_action == 'purchase_order':
-                self.write({
-                            'vendor_id' : [(4, x) for x in record.product_id.seller_ids.ids]
-                          })
+                record.vendor_id = record.product_id.seller_ids.mapped('name')
 
 
     product_id = fields.Many2one('product.product', string="Product")
