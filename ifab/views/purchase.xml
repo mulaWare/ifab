@@ -18,7 +18,7 @@
         <record id="purchase_req_ifab" model="ir.ui.view">
             <field name="name">purchase.order_req_ifab</field>
             <field name="model">purchase.requisition</field>
-            <field name="inherit_id" ref="purchase.view_purchase_requisition_form"/>
+            <field name="inherit_id" ref="purchase_requisition.view_purchase_requisition_form"/>
             <field name="arch" type="xml">
               <xpath expr="//field[@name='currency_id']" position="before">
                   <field name="project_id"/>
