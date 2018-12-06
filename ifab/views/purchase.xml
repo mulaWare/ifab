@@ -6,7 +6,7 @@
             <field name="model">purchase.order</field>
             <field name="inherit_id" ref="purchase.purchase_order_form"/>
             <field name="arch" type="xml">
-              <xpath expr="//field[@name='currency_id']" position="before">
+              <xpath expr="//field[@name='account_analytic_id']" position="replace">
                   <field name="project_id"/>
                   <field name="pm_id" on_change="0" can_create="false" can_write="false" modifiers="{&quot;column_invisible&quot;: true}"/>
                   <field name="account_analytic_id" on_change="0" can_create="false" can_write="false" modifiers="{&quot;column_invisible&quot;: true}"/>
@@ -28,7 +28,7 @@
               </xpath>
               <xpath expr="//form[1]/sheet[1]/notebook[1]/page[1]/field[1]/tree[1][//field[@name='analytic_tag_ids']]" position="attributes">
                      <attribute name="attrs">{}</attribute>
-                     <attribute name="groups"></attribute>
+
                      <attribute name="options">{'color_field': 'color'}</attribute>
                      <attribute name="widget">many2many_tags</attribute>
               </xpath>
