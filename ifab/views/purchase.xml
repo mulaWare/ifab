@@ -26,8 +26,11 @@
                   <field name="account_analytic_id" on_change="0" can_create="false" can_write="false" modifiers="{&quot;column_invisible&quot;: true}"/>
                   <field name="analytic_tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
               </xpath>
-              <xpath expr="//form[1]/sheet[1]/notebook[1]/page[1][//field[@name='analytic_tag_ids']]" position="replace">
-                     <field name="analytic_tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+              <xpath expr="//form[1]/sheet[1]/notebook[1]/page[1]/field[1]/tree[1][//field[@name='analytic_tag_ids']]" position="attibutes">
+                     <attribute name="attrs">{}</attribute>
+                     <attribute name="groups"></attribute>
+                     <attribute name="options">{'color_field': 'color'}</attribute>
+                     <attribute name="widget">many2many_tags</attribute>
               </xpath>
             </field>
         </record>
