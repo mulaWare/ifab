@@ -30,7 +30,7 @@
                   <field name="analytic_tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
               </xpath>
               <xpath expr="//form[1]/sheet[1]/notebook[1]/page[1]/field[1]/tree[1][//field[@name='account_analytic_id']]" position="after">
-                  <field name="analytic_tag_ids" groups="purchase.group_analytic_accounting" widget="many2many_tags"/>
+                  <field name="analytic_tag_ids" widget="many2many_tags"/>
               </xpath>
             </field>
         </record>
