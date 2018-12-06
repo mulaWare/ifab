@@ -84,5 +84,3 @@ class PurchaseRequisitionLine(models.Model):
             return res
         self.account_analytic_id = self.requisition_id.account_analytic_id.id
         self.analytic_tag_ids = self.requisition_id.analytic_tag_ids.ids
-
-    analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags')
