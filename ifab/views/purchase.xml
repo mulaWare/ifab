@@ -15,19 +15,6 @@
             </field>
         </record>
 
-        <record id="purchase_req_ifab" model="ir.ui.view">
-            <field name="name">purchase.order_req_ifab</field>
-            <field name="model">purchase.requisition</field>
-            <field name="inherit_id" ref="purchase.view_purchase_requisition_form"/>
-            <field name="arch" type="xml">
-              <xpath expr="//form[1]/sheet[1]/notebook[1]/page[1]" position="replace">
-                  <field name="project_id"/>
-                  <field name="pm_id" on_change="0" can_create="false" can_write="false" modifiers="{&quot;column_invisible&quot;: true}"/>
-                  <field name="account_analytic_id" on_change="0" can_create="false" can_write="false" modifiers="{&quot;column_invisible&quot;: true}"/>
-                  <field name="analytic_tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
-              </xpath>
 
-            </field>
-        </record>
 
 </odoo>
