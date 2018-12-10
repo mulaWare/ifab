@@ -3,24 +3,23 @@
     'name': "ifab",
 
     'summary': """
-        Short (1 phrase/line) summary of the module's purpose, used as
-        subtitle on modules listing or apps.openerp.com""",
+        Developement specific for IFaB""",
 
     'description': """
-        Long description of module's purpose
+        Developement specific for IFaB
     """,
 
-    'author': "My Company",
-    'website': "http://www.yourcompany.com",
+    'author': "IFaB",
+    'website': "http://www.ifab.com.mx",
 
     # Categories can be used to filter modules in modules listing
     # Check https://github.com/odoo/odoo/blob/master/odoo/addons/base/module/module_data.xml
     # for the full list
     'category': 'Uncategorized',
-    'version': '0.1',
+    'version': '0.2',
 
     # any module necessary for this one to work correctly
-        'depends': ['base','account','l10n_mx_edi','project','purchase','purchase_requisition'],
+        'depends': ['base','account','l10n_mx_edi','project','purchase','purchase_requisition', ],
 
     # always loaded
     'data': [
