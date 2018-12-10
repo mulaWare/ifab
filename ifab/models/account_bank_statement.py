@@ -12,7 +12,7 @@ import math
 
 class AccountBankStatementLine(models.Model):
     _name = "account.bank.statement.line"
-    _inherit = = "account.bank.statement.line"
+    _inherit = "account.bank.statement.line"
 
     def process_reconciliation(self, counterpart_aml_dicts=None, payment_aml_rec=None, new_aml_dicts=None):
         """ Match statement lines with existing payments (eg. checks) and/or payables/receivables (eg. invoices and credit notes) and/or new move lines (eg. write-offs).
