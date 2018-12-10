@@ -108,7 +108,7 @@ class AccountBankStatementLine(models.Model):
                     'currency_id': currency.id,
                     'amount': abs(total),
                     'communication': self._get_communication(payment_methods[0] if payment_methods else False),
-                    'name': self.env['ir.sequence'].next_by_code('account.payment.customer.invoice') or '/' or self.statement_id.name or _("Bank Statement %s") %  self.date,
+                    'name': self.env['ir.sequence'].next_by_code('account.payment.customer.invoice') or '/'  or _("Bank Statement %s") %  self.date,
                 })
 
             # Complete dicts to create both counterpart move lines and write-offs
