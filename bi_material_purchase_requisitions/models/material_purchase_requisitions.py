@@ -50,8 +50,6 @@ class MaterialPurchaseRequisition(models.Model):
     def copy(self, default=None):
         if default is None:
             default = {}
-#        if not default.get('sequence'):
-#            default['sequence'] = self.env['ir.sequence'].next_by_code('material.purchase.requisition') or '/'
         requisition = super(MaterialPurchaseRequisition, self).copy(default)
         if 'requisition_line_ids' not in default:
             self.map_lines(requisition.id)
@@ -314,6 +312,11 @@ class MaterialPurchaseRequisition(models.Model):
         if not self.project_id:
             return res
         self.analytic_tag_ids = self.project_id.analytic_account_id.tag_ids.ids
+        if not self.requisition_line_ids:
+            return
+        for line in self.requisition_line_ids:
+            line.account_analytic_id = self.account_analytic_id.id
+            line.analytic_tag_ids = self.analytic_tag_ids.ids    
 
     sequence = fields.Char(string='Sequence', readonly=True,copy =False)
     employee_id = fields.Many2one('hr.employee',string="Employee",required=True)
