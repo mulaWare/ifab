@@ -316,7 +316,7 @@ class MaterialPurchaseRequisition(models.Model):
             return
         for line in self.requisition_line_ids:
             line.account_analytic_id = self.account_analytic_id.id
-            line["analytic_tag_ids"]= [(5)]
+            line["analytic_tag_ids"]= [(2, x) for x in line.analytic_tag_ids.ids]
             line["analytic_tag_ids"]= [(4, x) for x in self.analytic_tag_ids.ids]
 
 
