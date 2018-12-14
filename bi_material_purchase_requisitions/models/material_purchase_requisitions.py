@@ -319,6 +319,14 @@ class MaterialPurchaseRequisition(models.Model):
             line["analytic_tag_ids"]= [(2, x) for x in line.analytic_tag_ids.ids]
             line["analytic_tag_ids"]= [(4, x) for x in self.analytic_tag_ids.ids]
 
+    @api.multi
+    @api.onchange('analytic_tag_ids')
+    def onchange_analytic_tag_ids(self):
+        if not self.analytic_tag_ids:
+            return
+        for line in self.analytic_tag_ids:
+            line["analytic_tag_ids"]= [(2, x) for x in line.analytic_tag_ids.ids]
+            line["analytic_tag_ids"]= [(4, x) for x in self.analytic_tag_ids.ids]
 
     sequence = fields.Char(string='Sequence', readonly=True,copy =False)
     employee_id = fields.Many2one('hr.employee',string="Employee",required=True)
