@@ -35,7 +35,7 @@
                     </div>
                     <group>
                         <group>
-                            <field name="employee_id" can_create="false" can_write="false"/>
+                            <field name="employee_id" delete="false" create="false" edit="false"/>
                             <field name="department_id"/>
                             <field name="requisition_responsible_id" can_create="false" can_write="false"/>
                             <field name="project_id" can_create="false" can_write="false"/>
