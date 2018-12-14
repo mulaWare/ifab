@@ -19,6 +19,45 @@ class MaterialPurchaseRequisition(models.Model):
         return super(MaterialPurchaseRequisition, self).create(vals)
 
     @api.model
+    def _map_lines_default_valeus(self, line):
+        """ get the default value for the copied lines on requisition duplication """
+        return {
+            'product_id': line.product_id.id,
+            'description': line.description,
+            'qty': line.qty,
+            'uom_id': line.uom_id.id,
+            'requisition_action': line.requisition_action,
+            'vendor_id': line.vendor_id.id,
+            'account_analytic_id': line.account_analytic_id.id,
+            'analytic_tag_ids': [(4, x) for x in line.analytic_tag_ids.ids],
+            'location_id': line.location_id.id,
+        }
+
+    @api.multi
+    def map_lines(self, new_requisition_id):
+        """ copy and map lines from old to new requisition """
+        lines = self.env['requisition.line']
+        # We want to copy archived lines, but do not propagate an active_test context key
+        line_ids = self.env['requisition.line'].with_context(active_test=False).search([('requisition_id', '=', self.id)]).ids
+        for line in self.env['requisition.line'].browse(line_ids):
+            # preserve task name and stage, normally altered during copy
+            defaults = self._map_lines_default_valeus(line)
+            lines += line.copy(defaults)
+        return self.browse(new_requisition_id).write({'requisition_line_ids': [(6, 0, lines.ids)]})
+
+    @api.multi
+    @api.returns('self', lambda value: value.id)
+    def copy(self, default=None):
+        if default is None:
+            default = {}
+        if not default.get('sequence'):
+            default['sequence'] = self.env['ir.sequence'].next_by_code('material.purchase.requisition') or '/'
+        requisition = super(MaterialPurchaseRequisition, self).copy(default)
+        if 'requisition_line_ids' not in default:
+            self.map_lines(requisition.id)
+        return requisition
+
+    @api.model
     def default_get(self, flds):
         result = super(MaterialPurchaseRequisition, self).default_get(flds)
         #result['employee_id'] = self.env.user.partner_id.id
