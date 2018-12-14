@@ -50,8 +50,8 @@ class MaterialPurchaseRequisition(models.Model):
     def copy(self, default=None):
         if default is None:
             default = {}
-        if not default.get('sequence'):
-            default['sequence'] = self.env['ir.sequence'].next_by_code('material.purchase.requisition') or '/'
+#        if not default.get('sequence'):
+#            default['sequence'] = self.env['ir.sequence'].next_by_code('material.purchase.requisition') or '/'
         requisition = super(MaterialPurchaseRequisition, self).copy(default)
         if 'requisition_line_ids' not in default:
             self.map_lines(requisition.id)
