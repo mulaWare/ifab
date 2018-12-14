@@ -324,7 +324,7 @@ class MaterialPurchaseRequisition(models.Model):
     def onchange_analytic_tag_ids(self):
         if not self.analytic_tag_ids:
             return
-        for line in self.analytic_tag_ids:
+        for line in self.requisition_line_ids:
             line["analytic_tag_ids"]= [(2, x) for x in line.analytic_tag_ids.ids]
             line["analytic_tag_ids"]= [(4, x) for x in self.analytic_tag_ids.ids]
 
