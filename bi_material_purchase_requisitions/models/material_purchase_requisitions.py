@@ -315,12 +315,9 @@ class MaterialPurchaseRequisition(models.Model):
         if not self.requisition_line_ids:
             return
         for line in self.requisition_line_ids:
-            line_vals = {
-                         'account_analytic_id' : self.account_analytic_id.id,
-                         'analytic_tag_ids': [(4, x) for x in self.analytic_tag_ids.ids],            
-                        }
-            line.write(line_vals)
-
+            line.account_analytic_id = self.account_analytic_id.id
+            line["analytic_tag_ids"]= [(5)]
+            line.analytic_tag_ids = self.analytic_tag_ids.ids
 
     sequence = fields.Char(string='Sequence', readonly=True,copy =False)
     employee_id = fields.Many2one('hr.employee',string="Employee",required=True)
