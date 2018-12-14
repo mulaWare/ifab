@@ -27,7 +27,7 @@ class MaterialPurchaseRequisition(models.Model):
             'qty': line.qty,
             'uom_id': line.uom_id.id,
             'requisition_action': line.requisition_action,
-            'vendor_id': line.vendor_id.id,
+            'vendor_id': [(4, x) for x in line.vendor_id.ids],
             'account_analytic_id': line.account_analytic_id.id,
             'analytic_tag_ids': [(4, x) for x in line.analytic_tag_ids.ids],
             'location_id': line.location_id.id,
