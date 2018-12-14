@@ -38,7 +38,7 @@ class MaterialPurchaseRequisition(models.Model):
         """ copy and map lines from old to new requisition """
         lines = self.env['requisition.line']
         # We want to copy archived lines, but do not propagate an active_test context key
-        line_ids = self.env['requisition.line'].with_context(active_test=False).search([('requisition_id', '=', self.id)]).ids
+        line_ids = self.env['requisition.line'].search([('requisition_id', '=', self.id)]).ids
         for line in self.env['requisition.line'].browse(line_ids):
             # preserve task name and stage, normally altered during copy
             defaults = self._map_lines_default_valeus(line)
