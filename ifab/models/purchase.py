@@ -23,6 +23,21 @@ class PurchaseOrder(models.Model):
         if not self.project_id:
             return res
         self.analytic_tag_ids = self.project_id.analytic_account_id.tag_ids.ids
+        if not self.order_line:
+            return
+        for line in self.order_line:
+            line.account_analytic_id = self.account_analytic_id.id
+            line["analytic_tag_ids"]= [(2, x) for x in line.analytic_tag_ids.ids]
+            line["analytic_tag_ids"]= [(4, x) for x in self.analytic_tag_ids.ids]
+
+    @api.multi
+    @api.onchange('analytic_tag_ids')
+    def onchange_analytic_tag_ids(self):
+        if not self.analytic_tag_ids:
+            return
+        for line in self.order_line:
+            line["analytic_tag_ids"]= [(2, x) for x in line.analytic_tag_ids.ids]
+            line["analytic_tag_ids"]= [(4, x) for x in self.analytic_tag_ids.ids]
 
     project_id = fields.Many2one('project.project',
         string='Project',
@@ -59,6 +74,22 @@ class PurchaseRequisition(models.Model):
         if not self.project_id:
             return res
         self.analytic_tag_ids = self.project_id.analytic_account_id.tag_ids.ids
+        if not self.line_ids:
+            return
+        for line in self.line_ids:
+            line.account_analytic_id = self.account_analytic_id.id
+            line["analytic_tag_ids"]= [(2, x) for x in line.analytic_tag_ids.ids]
+            line["analytic_tag_ids"]= [(4, x) for x in self.analytic_tag_ids.ids]
+
+    @api.multi
+    @api.onchange('analytic_tag_ids')
+    def onchange_analytic_tag_ids(self):
+        if not self.analytic_tag_ids:
+            return
+        for line in self.line_ids:
+            line["analytic_tag_ids"]= [(2, x) for x in line.analytic_tag_ids.ids]
+            line["analytic_tag_ids"]= [(4, x) for x in self.analytic_tag_ids.ids]
+
 
     project_id = fields.Many2one('project.project',
         string='Project',
