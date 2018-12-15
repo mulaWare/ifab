@@ -94,7 +94,6 @@
                         <field name="user_id" attrs="{'readonly': [('state','not in',('draft','in_progress','open'))]}"/>
                         <field name="type_id" attrs="{'readonly': [('state','not in',('draft','in_progress','open'))]}" widget="selection"/>
                         <field name="vendor_id" context="{'search_default_supplier':1, 'default_supplier':1, 'default_customer':0}" domain="[('supplier','=',True)]"/>
-                        <field name="currency_id" groups="base.group_multi_currency" options="{'no_create': True, 'no_create_edit':True}"/>
                         <field name="project_id" options="{'no_create': True, 'no_create_edit':True}"/>
                         <field name="pm_id" on_change="0" can_create="false" can_write="false" modifiers="{&quot;column_invisible&quot;: true}"/>
                         <field name="account_analytic_id" options="{'no_create': True, 'no_create_edit':True}"/>
