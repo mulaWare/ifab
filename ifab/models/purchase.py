@@ -36,7 +36,7 @@ class PurchaseOrder(models.Model):
         self.fiscal_position_id = fpos.id
         self.payment_term_id = payment_term.id
         self.company_id = requisition.company_id.id
-        self.currency_id = requisition.currency_id.id
+        self.currency_id = partner.currency_id.id
         if not self.origin or requisition.name not in self.origin.split(', '):
             if self.origin:
                 if requisition.name:
