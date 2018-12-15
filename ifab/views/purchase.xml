@@ -11,6 +11,7 @@
                         <group>
                             <field name="partner_id" context="{'search_default_supplier':1, 'default_supplier':1, 'default_customer':0}" domain="[('supplier','=',True)]" options="{'no_create': True, 'no_create_edit':True}"/>
                             <field name="partner_ref"/>
+                            <field name="requisition_id" domain="[('state', 'in', ('in_progress', 'open')), ('vendor_id', 'in', (partner_id, False))]"/>
                             <field name="is_shipped" invisible="1"/>
                             <field name="currency_id" groups="base.group_multi_currency" options="{'no_create': True, 'no_create_edit':True}"/>
                             <field name="project_id" options="{'no_create': True, 'no_create_edit':True}"/>
@@ -91,9 +92,9 @@
               <xpath expr="//form[1]/sheet[1]/group[1]" position="replace">
                 <group>
                     <group>
-                        <field name="user_id" attrs="{'readonly': [('state','not in',('draft','in_progress','open'))]}"/>
+                        <field name="user_id" attrs="{'readonly': [('state','not in',('draft','in_progress','open'))]}" options="{'no_create': True, 'no_create_edit':True}"/>
                         <field name="type_id" attrs="{'readonly': [('state','not in',('draft','in_progress','open'))]}" widget="selection"/>
-                        <field name="vendor_id" context="{'search_default_supplier':1, 'default_supplier':1, 'default_customer':0}" domain="[('supplier','=',True)]"/>
+                        <field name="vendor_id" context="{'search_default_supplier':1, 'default_supplier':1, 'default_customer':0}" domain="[('supplier','=',True)]" options="{'no_create': True, 'no_create_edit':True}"/>
                         <field name="project_id" options="{'no_create': True, 'no_create_edit':True}"/>
                         <field name="pm_id" on_change="0" can_create="false" can_write="false" modifiers="{&quot;column_invisible&quot;: true}"/>
                         <field name="account_analytic_id" options="{'no_create': True, 'no_create_edit':True}"/>
