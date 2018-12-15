@@ -47,8 +47,7 @@ class PurchaseOrder(models.Model):
         self.date_order = requisition.date_end or fields.Datetime.now()
         self.picking_type_id = requisition.picking_type_id.id
         self.project_id = requisition.project_id.id
-        self.account_analytic_id = requisition.account_analytic_id.id
-        self.analytic_tag_ids = requisition.analytic_tag_ids.ids
+
 
         if requisition.type_id.line_copy != 'copy':
             return
@@ -103,6 +102,11 @@ class PurchaseOrder(models.Model):
             line.account_analytic_id = self.account_analytic_id.id
             line["analytic_tag_ids"]= [(2, x) for x in line.analytic_tag_ids.ids]
             line["analytic_tag_ids"]= [(4, x) for x in self.analytic_tag_ids.ids]
+        if self.requisition_id:
+            requisition = self.requisition_id
+            self.account_analytic_id = requisition.account_analytic_id.id
+            self.analytic_tag_ids = requisition.analytic_tag_ids.ids
+            return
 
     @api.multi
     @api.onchange('analytic_tag_ids')
