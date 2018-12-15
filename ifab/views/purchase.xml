@@ -138,7 +138,6 @@
                                     </div>
                                 </group>
                                 <group>
-                                    <field name="user_id"/>
                                     <field name="invoice_status"/>
                                     <field name="payment_term_id" options="{'no_open': True, 'no_create': True}" attrs="{'readonly': ['|', ('invoice_status','=', 'invoiced'), ('state', '=', 'done')]}"/>
                                     <field name="fiscal_position_id" options="{'no_create': True}" attrs="{'readonly': ['|', ('invoice_status','=', 'invoiced'), ('state', '=', 'done')]}"/>
