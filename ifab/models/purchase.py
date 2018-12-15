@@ -48,7 +48,6 @@ class PurchaseOrder(models.Model):
         self.picking_type_id = requisition.picking_type_id.id
         self.project_id = requisition.project_id.id
         self.account_analytic_id = requisition.account_analytic_id.id
-        self["analytic_tag_ids"]= [(2, x) for x in self.analytic_tag_ids.ids]
         self["analytic_tag_ids"]= [(4, x) for x in requisition.analytic_tag_ids.ids]
 
         if requisition.type_id.line_copy != 'copy':
