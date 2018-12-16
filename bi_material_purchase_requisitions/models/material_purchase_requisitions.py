@@ -19,6 +19,43 @@ class MaterialPurchaseRequisition(models.Model):
         return super(MaterialPurchaseRequisition, self).create(vals)
 
     @api.model
+    def _map_lines_default_valeus(self, line):
+        """ get the default value for the copied lines on requisition duplication """
+        return {
+            'product_id': line.product_id.id,
+            'description': line.description,
+            'qty': line.qty,
+            'uom_id': line.uom_id.id,
+            'requisition_action': line.requisition_action,
+            'vendor_id': [(4, x) for x in line.vendor_id.ids],
+            'account_analytic_id': line.account_analytic_id.id,
+            'analytic_tag_ids': [(4, x) for x in line.analytic_tag_ids.ids],
+            'location_id': line.location_id.id,
+        }
+
+    @api.multi
+    def map_lines(self, new_requisition_id):
+        """ copy and map lines from old to new requisition """
+        lines = self.env['requisition.line']
+        # We want to copy archived lines, but do not propagate an active_test context key
+        line_ids = self.env['requisition.line'].search([('requisition_id', '=', self.id)]).ids
+        for line in self.env['requisition.line'].browse(line_ids):
+            # preserve task name and stage, normally altered during copy
+            defaults = self._map_lines_default_valeus(line)
+            lines += line.copy(defaults)
+        return self.browse(new_requisition_id).write({'requisition_line_ids': [(6, 0, lines.ids)]})
+
+    @api.multi
+    @api.returns('self', lambda value: value.id)
+    def copy(self, default=None):
+        if default is None:
+            default = {}
+        requisition = super(MaterialPurchaseRequisition, self).copy(default)
+        if 'requisition_line_ids' not in default:
+            self.map_lines(requisition.id)
+        return requisition
+
+    @api.model
     def default_get(self, flds):
         result = super(MaterialPurchaseRequisition, self).default_get(flds)
         #result['employee_id'] = self.env.user.partner_id.id
@@ -38,8 +75,8 @@ class MaterialPurchaseRequisition(models.Model):
         email_template_obj = self.env['mail.template'].sudo().browse(template_id)
         if template_id:
             values = email_template_obj.generate_email(self.id, fields=None)
-            values['email_from'] = self.employee_id.work_email
-            values['email_to'] = self.requisition_responsible_id.email
+            values['email_from'] = self.requisition_responsible_id.email
+            values['email_to'] = self.pm_id.email
             values['res_id'] = False
             mail_mail_obj = self.env['mail.mail']
             #request.env.uid = 1
@@ -62,7 +99,7 @@ class MaterialPurchaseRequisition(models.Model):
         if template_id:
             values = email_template_obj.generate_email(self.id, fields=None)
             values['email_from'] = self.env.user.partner_id.email
-            values['email_to'] = self.employee_id.work_email
+            values['email_to'] = self.requisition_responsible_id.email
             values['res_id'] = False
             mail_mail_obj = self.env['mail.mail']
             #request.env.uid = 1
@@ -116,8 +153,8 @@ class MaterialPurchaseRequisition(models.Model):
         email_template_obj = self.env['mail.template'].sudo().browse(template_id)
         if template_id:
             values = email_template_obj.generate_email(self.id, fields=None)
-            values['email_from'] = self.employee_id.work_email
-            values['email_to'] = self.employee_id.work_email
+            values['email_from'] = self.env.user.partner_id.email
+            values['email_to'] = self.requisition_responsible_id.email
             values['res_id'] = False
             mail_mail_obj = self.env['mail.mail']
             #request.env.uid = 1
@@ -275,14 +312,29 @@ class MaterialPurchaseRequisition(models.Model):
         if not self.project_id:
             return res
         self.analytic_tag_ids = self.project_id.analytic_account_id.tag_ids.ids
+        if not self.requisition_line_ids:
+            return
+        for line in self.requisition_line_ids:
+            line.account_analytic_id = self.account_analytic_id.id
+            line["analytic_tag_ids"]= [(2, x) for x in line.analytic_tag_ids.ids]
+            line["analytic_tag_ids"]= [(4, x) for x in self.analytic_tag_ids.ids]
+
+    @api.multi
+    @api.onchange('analytic_tag_ids')
+    def onchange_analytic_tag_ids(self):
+        if not self.analytic_tag_ids:
+            return
+        for line in self.requisition_line_ids:
+            line["analytic_tag_ids"]= [(2, x) for x in line.analytic_tag_ids.ids]
+            line["analytic_tag_ids"]= [(4, x) for x in self.analytic_tag_ids.ids]
 
     sequence = fields.Char(string='Sequence', readonly=True,copy =False)
     employee_id = fields.Many2one('hr.employee',string="Employee",required=True)
     department_id = fields.Many2one('hr.department',string="Department",required=True, related='employee_id.department_id', readonly=1)
     requisition_responsible_id  = fields.Many2one('res.users',string="Requisition Responsible")
-    requisition_date = fields.Date(string="Requisition Date",required=True)
+    requisition_date = fields.Date(string="Requisition Date",required=True, default=fields.Datetime.now)
     received_date = fields.Date(string="Received Date",readonly=True)
-    requisition_deadline_date = fields.Date(string="Requisition Deadline", default=fields.Datetime.now)
+    requisition_deadline_date = fields.Date(string="Requisition Deadline",required=True, default=fields.Datetime.now)
     state = fields.Selection([
                                 ('new','New'),
                                 ('department_approval','Waiting PM Approval'),

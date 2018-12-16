@@ -6,14 +6,81 @@
             <field name="model">purchase.order</field>
             <field name="inherit_id" ref="purchase.purchase_order_form"/>
             <field name="arch" type="xml">
-              <xpath expr="//field[@name='currency_id']" position="before">
-                  <field name="project_id"/>
-                  <field name="pm_id" on_change="0" can_create="false" can_write="false" modifiers="{&quot;column_invisible&quot;: true}"/>
-                  <field name="account_analytic_id" on_change="0" can_create="false" can_write="false" modifiers="{&quot;column_invisible&quot;: true}"/>
-                  <field name="analytic_tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+              <xpath expr="//form[1]/sheet[1]/group[1]" position="replace">
+                      <group>
+                        <group>
+                            <field name="partner_id" context="{'search_default_supplier':1, 'default_supplier':1, 'default_customer':0}" domain="[('supplier','=',True)]" options="{'no_create': True, 'no_create_edit':True}"/>
+                            <field name="partner_ref"/>
+                            <field name="requisition_id" domain="[('state', 'in', ('in_progress', 'open')), ('vendor_id', 'in', (partner_id, False))]"/>
+                            <field name="is_shipped" invisible="1"/>
+                            <field name="currency_id" groups="base.group_multi_currency" options="{'no_create': True, 'no_create_edit':True}"/>
+                            <field name="project_id" options="{'no_create': True, 'no_create_edit':True}"/>
+                            <field name="pm_id" on_change="0" can_create="false" can_write="false" modifiers="{&quot;column_invisible&quot;: true}"/>
+                            <field name="account_analytic_id" options="{'no_create': True, 'no_create_edit':True}"/>
+                            <field name="analytic_tag_ids" widget="many2many_tags" options="{'color_field': 'color','no_create': True, 'no_create_edit':True}"/>
+                        </group>
+                        <group>
+                            <field name="date_order"/>
+                            <field name="origin" attrs="{'invisible': [('origin','=',False)]}"/>
+                            <field name="company_id" groups="base.group_multi_company" options="{'no_create': True, 'no_create_edit':True}"/>
+                        </group>
+                    </group>
               </xpath>
-
-
+              <xpath expr="//form[1]/sheet[1]/notebook[1]/page[1]/field[1]" position="replace">
+                            <field name="order_line" attrs="{'readonly': [('state', 'in', ('done', 'cancel'))]}">
+                                 <tree string="Purchase Order Lines" editable="bottom">
+                                    <field name="currency_id" invisible="1"/>
+                                    <field name="state" invisible="1"/>
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="product_id" attrs="{'readonly': [('state', 'in', ('purchase', 'to approve','done', 'cancel'))]}" context="{'partner_id':parent.partner_id, 'quantity':product_qty,'uom':product_uom, 'company_id': parent.company_id}" force_save="1" options="{'no_create': True, 'no_create_edit':True}"/>
+                                    <field name="name"/>
+                                    <field name="date_planned"/>
+                                    <field name="company_id" groups="base.group_multi_company" options="{'no_create': True, 'no_create_edit':True}"/>
+                                    <field name="account_analytic_id" context="{'default_partner_id':parent.partner_id}" groups="analytic.group_analytic_accounting" options="{'no_create': True, 'no_create_edit':True}"/>
+                                    <field name="analytic_tag_ids" widget="many2many_tags" options="{'color_field': 'color','no_create': True, 'no_create_edit':True}"/>
+                                    <field name="product_qty"/>
+                                    <field name="qty_received" attrs="{'column_invisible': [('parent.state', 'not in', ('purchase', 'done'))]}"/>
+                                    <field name="qty_invoiced" attrs="{'column_invisible': [('parent.state', 'not in', ('purchase', 'done'))]}"/>
+                                    <field name="product_uom" groups="uom.group_uom" attrs="{'readonly': [('state', 'in', ('purchase', 'done', 'cancel'))]}" force_save="1" options="{'no_create': True, 'no_create_edit':True}"/>
+                                    <field name="price_unit"/>
+                                    <field name="taxes_id" widget="many2many_tags" domain="[('type_tax_use','=','purchase')]" context="{'default_type_tax_use': 'purchase', 'search_view_ref': 'account.account_tax_view_search'}" options="{'no_create': True, 'no_create_edit':True}"/>
+                                    <field name="price_subtotal" widget="monetary"/>
+                                </tree>
+                                <form string="Purchase Order Line">
+                                    <sheet>
+                                        <field name="state" invisible="1"/>
+                                        <group>
+                                            <group>
+                                                <field name="product_id"
+                                                       context="{'partner_id': parent.partner_id}" options="{'no_create': True, 'no_create_edit':True}"/>
+                                                <label for="product_qty"/>
+                                                <div>
+                                                    <field name="product_qty" class="oe_inline"/>
+                                                    <span class="oe_inline">&#160;</span>
+                                                    <field name="product_uom" groups="uom.group_uom" class="oe_inline" options="{'no_create': True, 'no_create_edit':True}"/>
+                                                </div>
+                                                <field name="price_unit"/>
+                                            </group>
+                                            <group>
+                                                <field name="taxes_id" widget="many2many_tags" domain="[('type_tax_use', '=', 'purchase')]" options="{'no_create': True, 'no_create_edit':True}"/>
+                                                <field name="date_planned" widget="date"/>
+                                                <field name="account_analytic_id" colspan="2" groups="analytic.group_analytic_accounting" options="{'no_create': True, 'no_create_edit':True}"/>
+                                                <field name="analytic_tag_ids" widget="many2many_tags" options="{'color_field': 'color','no_create': True, 'no_create_edit':True}"/>
+                                                <field name="company_id" groups="base.group_multi_company" options="{'no_create': True, 'no_create_edit':True}"/>
+                                            </group>
+                                        </group>
+                                        <notebook>
+                                        <page string="Notes">
+                                            <field name="name"/>
+                                        </page>
+                                        <page string="Invoices and Incoming Shipments">
+                                            <field name="invoice_lines"/>
+                                        </page>
+                                        </notebook>
+                                    </sheet>
+                                </form>
+                            </field>
+                </xpath>
             </field>
         </record>
 
@@ -22,35 +89,49 @@
             <field name="model">purchase.requisition</field>
             <field name="inherit_id" ref="purchase_requisition.view_purchase_requisition_form"/>
             <field name="arch" type="xml">
-              <xpath expr="//field[@name='account_analytic_id']" position="replace"/>
-              <xpath expr="//field[@name='vendor_id']" position="after">
-                  <field name="project_id"/>
-                  <field name="pm_id" on_change="0" can_create="false" can_write="false" modifiers="{&quot;column_invisible&quot;: true}"/>
-                  <field name="account_analytic_id" on_change="0" can_create="false" can_write="false" modifiers="{&quot;column_invisible&quot;: true}"/>
-                  <field name="analytic_tag_ids" widget="many2many_tags" options="{'color_field': 'color'}"/>
+              <xpath expr="//form[1]/sheet[1]/group[1]" position="replace">
+                <group>
+                    <group>
+                        <field name="user_id" attrs="{'readonly': [('state','not in',('draft','in_progress','open'))]}" options="{'no_create': True, 'no_create_edit':True}"/>
+                        <field name="type_id" attrs="{'readonly': [('state','not in',('draft','in_progress','open'))]}" widget="selection"/>
+                        <field name="vendor_id" context="{'search_default_supplier':1, 'default_supplier':1, 'default_customer':0}" domain="[('supplier','=',True)]" options="{'no_create': True, 'no_create_edit':True}"/>
+                        <field name="project_id" options="{'no_create': True, 'no_create_edit':True}"/>
+                        <field name="pm_id" on_change="0" can_create="false" can_write="false" modifiers="{&quot;column_invisible&quot;: true}"/>
+                        <field name="account_analytic_id" options="{'no_create': True, 'no_create_edit':True}"/>
+                        <field name="analytic_tag_ids" widget="many2many_tags" options="{'color_field': 'color','no_create': True, 'no_create_edit':True}"/>
+                    </group>
+                    <group>
+                        <field name="date_end" attrs="{'readonly': [('state','not in',('draft','in_progress','open'))]}"/>
+                        <field name="ordering_date" attrs="{'readonly': [('state','not in',('draft','in_progress','open'))]}"/>
+                        <field name="schedule_date" attrs="{'readonly': [('state','not in',('draft','in_progress','open'))]}"/>
+                        <field name="origin" placeholder="e.g. PO0025" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                        <field name="picking_type_id" widget="selection" groups="stock.group_adv_location" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                        <field name="company_id" groups="base.group_multi_company" options="{'no_create': True, 'no_create_edit':True}" attrs="{'readonly': [('state','not in',('draft'))]}"/>
+                    </group>
+                </group>
               </xpath>
               <xpath expr="//form[1]/sheet[1]/notebook[1]/page[1]/field[1]" position="replace">
                   <field name="line_ids">
                       <tree string="Products" editable="bottom">
-                          <field name="product_id"/>
+                          <field name="product_id" options="{'no_create': True, 'no_create_edit':True}"/>
                           <field name="product_qty"/>
                           <field name="qty_ordered"/>
-                          <field name="product_uom_id" groups="uom.group_uom"/>
+                          <field name="product_uom_id" groups="uom.group_uom" options="{'no_create': True, 'no_create_edit':True}"/>
                           <field name="schedule_date" groups="base.group_no_one"/>
-                          <field name="account_analytic_id" groups="analytic.group_analytic_accounting"/>
-                          <field name="analytic_tag_ids" widget="many2many_tags"/>
+                          <field name="account_analytic_id" groups="analytic.group_analytic_accounting" options="{'no_create': True, 'no_create_edit':True}"/>
+                          <field name="analytic_tag_ids" widget="many2many_tags" options="{'color_field': 'color','no_create': True, 'no_create_edit':True}"/>
                           <field name="price_unit"/>
                       </tree>
                       <form string="Products">
                           <group>
-                              <field name="product_id" />
+                              <field name="product_id" options="{'no_create': True, 'no_create_edit':True}"/>
                               <field name="product_qty"/>
                               <field name="qty_ordered"/>
-                              <field name="product_uom_id" />
+                              <field name="product_uom_id" options="{'no_create': True, 'no_create_edit':True}"/>
                               <field name="schedule_date"/>
-                              <field name="account_analytic_id" groups="analytic.group_analytic_accounting"/>
-                              <field name="analytic_tag_ids" widget="many2many_tags"/>
-                              <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
+                              <field name="account_analytic_id" groups="analytic.group_analytic_accounting" options="{'no_create': True, 'no_create_edit':True}"/>
+                              <field name="analytic_tag_ids" widget="many2many_tags" options="{'color_field': 'color','no_create': True, 'no_create_edit':True}"/>
+                              <field name="company_id" groups="base.group_multi_company" options="{'no_create': True, 'no_create_edit':True}"/>
                           </group>
                       </form>
                   </field>
