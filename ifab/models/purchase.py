@@ -90,6 +90,8 @@ class PurchaseOrder(models.Model):
                 name=name, product_qty=product_qty, price_unit=price_unit,
                 taxes_ids=taxes_ids)
 
+            raise UserError(_("You cannot confirm agreement '%s' ") % self.id)
+            
             po_line_vals = {
                             'product_id' : line.product_id.id,
                             'product_qty': product_qty,
