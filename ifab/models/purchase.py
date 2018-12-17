@@ -21,9 +21,6 @@ class PurchaseOrder(models.Model):
         if not self.requisition_id:
             return
 
-        purchase_order_obj = self.env['purchase.order']
-        purchase_order_line_obj = self.env['purchase.order.line']
-
         requisition = self.requisition_id
         if self.partner_id:
             partner = self.partner_id
@@ -51,7 +48,6 @@ class PurchaseOrder(models.Model):
         self.picking_type_id = requisition.picking_type_id.id
         self.project_id = requisition.project_id.id
 
-        self.onchange_partner_id()
 
         if requisition.type_id.line_copy != 'copy':
             return
@@ -89,25 +85,8 @@ class PurchaseOrder(models.Model):
             order_line_values = line._prepare_purchase_order_line(
                 name=name, product_qty=product_qty, price_unit=price_unit,
                 taxes_ids=taxes_ids)
-
-            raise UserError(_("You cannot confirm agreement '%s' ") % self.id)
-            
-            po_line_vals = {
-                            'product_id' : line.product_id.id,
-                            'product_qty': product_qty,
-                            'name' : line.product_id.name,
-                            'price_unit' : price_unit,
-                            'account_analytic_id' : line.account_analytic_id.id,
-                            'analytic_tag_ids': [(4, x) for x in line.analytic_tag_ids.ids],
-                            'date_planned' : requisition.date_end or fields.Datetime.now(),
-                            'product_uom' : line.product_uom_id.id,
-                            'order_id' : self.id,
-                            }
-
-            purchase_order_line = purchase_order_line_obj.sudo().create(po_line_vals)
-            purchase_order_line.onchange_product_id()
-
-
+            order_lines.append((0, 0, order_line_values))
+        self.order_line = order_lines
 
 
     @api.multi
