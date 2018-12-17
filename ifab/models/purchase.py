@@ -90,7 +90,19 @@ class PurchaseOrder(models.Model):
                 name=name, product_qty=product_qty, price_unit=price_unit,
                 taxes_ids=taxes_ids)
 
-            purchase_order_line = purchase_order_line_obj.sudo().create(order_line_values)
+            po_line_vals = {
+                            'product_id' : line.product_id.id,
+                            'product_qty': product_qty,
+                            'name' : line.product_id.description,
+                            'price_unit' : price_unit,
+                            'account_analytic_id' : line.account_analytic_id.id,
+                            'analytic_tag_ids': [(4, x) for x in line.analytic_tag_ids.ids],
+                            'date_planned' : requisition.date_end or fields.Datetime.now(),
+                            'product_uom' : line.product_uom_id.id,
+                            'order_id' : self.id,
+                            }    
+
+            purchase_order_line = purchase_order_line_obj.sudo().create(po_line_vals)
             purchase_order_line.onchange_product_id()
 
 
