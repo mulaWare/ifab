@@ -186,6 +186,7 @@ class MaterialPurchaseRequisition(models.Model):
                         }
                         purchase_order_line = purchase_order_line_obj.sudo().create(po_line_vals)
                         purchase_order_line.onchange_product_id()
+                        purchase_order_line['product_qty'] = line.qty
 
                     else:
                         vals = {
@@ -215,6 +216,7 @@ class MaterialPurchaseRequisition(models.Model):
                         }
                         purchase_order_line = purchase_order_line_obj.sudo().create(po_line_vals)
                         purchase_order_line.onchange_product_id()
+                        purchase_order_line['product_qty'] = line.qty
             else:
                 for vendor in line.vendor_id:
                     stock_picking_obj = self.env['stock.picking']
