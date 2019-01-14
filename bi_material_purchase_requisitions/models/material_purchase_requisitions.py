@@ -76,7 +76,7 @@ class MaterialPurchaseRequisition(models.Model):
         if template_id:
             values = email_template_obj.generate_email(self.id, fields=None)
             values['email_from'] = self.requisition_responsible_id.email
-            values['email_to'] = self.pm_id.email
+            values['email_to'] = self.department_manager_id.email
             values['res_id'] = False
             mail_mail_obj = self.env['mail.mail']
             #request.env.uid = 1
@@ -333,7 +333,8 @@ class MaterialPurchaseRequisition(models.Model):
     sequence = fields.Char(string='Sequence', readonly=True,copy =False)
     employee_id = fields.Many2one('hr.employee',string="Employee",required=True)
     department_id = fields.Many2one('hr.department',string="Department",required=True, related='employee_id.department_id', readonly=1)
-    requisition_responsible_id  = fields.Many2one('res.users',string="Requisition Responsible")
+    department_manager_id = fields.Many2one('res.users',string="Manager", related='employee_id.department_id.manager_id.user_id',readonly=1)
+    requisition_responsible_id  = fields.Many2one('res.users',string="Requisition Responsible", default=lambda self: self.env.user.id, index=1, readonly=1)
     requisition_date = fields.Date(string="Requisition Date",required=True, default=fields.Datetime.now)
     received_date = fields.Date(string="Received Date",readonly=True)
     requisition_deadline_date = fields.Date(string="Requisition Deadline",required=True, default=fields.Datetime.now)
@@ -347,7 +348,6 @@ class MaterialPurchaseRequisition(models.Model):
                                 ('cancel','Cancel')],string='Stage',default="new")
     requisition_line_ids = fields.One2many('requisition.line','requisition_id',string="Requisition Line ID")
     confirmed_by_id = fields.Many2one('res.users',string="Confirmed By")
-    department_manager_id = fields.Many2one('res.users',string="PM")
     approved_by_id = fields.Many2one('res.users',string="Approved By")
     rejected_by = fields.Many2one('res.users',string="Rejected By")
     confirmed_date = fields.Date(string="Confirmed Date",readonly=True)
@@ -408,7 +408,7 @@ class RequisitionLine(models.Model):
     qty = fields.Float(string="Quantity",default=1.0)
     uom_id = fields.Many2one('product.uom',string="Unit Of Measure")
     requisition_id = fields.Many2one('material.purchase.requisition',string="Requisition Line")
-    requisition_action = fields.Selection([('purchase_order','Purchase Order'),('internal_picking','Internal Picking')],default='internal_picking',string="Requisition Action")
+    requisition_action = fields.Selection([('purchase_order','Purchase Order'),('internal_picking','Internal Picking')],default='purchase_order',string="Requisition Action")
     vendor_id = fields.Many2many('res.partner',string="Vendors")
     account_analytic_id = fields.Many2one('account.analytic.account', string='Analytic Account')
     analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags')
