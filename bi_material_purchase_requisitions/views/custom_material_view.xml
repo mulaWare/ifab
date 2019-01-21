@@ -62,8 +62,8 @@
                                     <field name="description" />
                                     <field name="qty" />
                                     <field name="qty_available" />
-                                    <field name="location_id" options="{'no_create': True, 'no_create_edit':True}"/>
-                                    <field name="uom_id" options="{'no_create': True, 'no_create_edit':True}"/>
+                                    <field name="location_id" options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"/>
+                                    <field name="uom_id" options="{'no_create': True, 'no_create_edit':True, 'no_open':True}"/>
                                     <field name="vendor_id" widget="many2many_tags" groups="bi_material_purchase_requisitions.group_purchase_requisition_user,bi_material_purchase_requisitions.group_requisition_department_manager,purchase.group_purchase_manager" options="{'no_create': True, 'no_create_edit':True}"/>
                                 </tree>
                             </field>
