@@ -97,6 +97,10 @@ class AccountBankStatementLine(models.Model):
 
                 payment_methods = (total>0) and self.journal_id.inbound_payment_method_ids or self.journal_id.outbound_payment_method_ids
                 currency = self.journal_id.currency_id or self.company_id.currency_id
+                
+                l10_payment_method_obj = self.env['l10n_mx_edi.payment.method']
+                l10_payment_method_id = l10_payment_method_obj.search([('code','=','03')])
+                
                 payment = self.env['account.payment'].create({
                     'payment_method_id': payment_methods and payment_methods[0].id or False,
                     'payment_type': total >0 and 'inbound' or 'outbound',
@@ -109,6 +113,7 @@ class AccountBankStatementLine(models.Model):
                     'amount': abs(total),
                     'communication': self._get_communication(payment_methods[0] if payment_methods else False),
                     'name': self.env['ir.sequence'].next_by_code('account.payment.customer.invoice') or '/'  or _("Bank Statement %s") %  self.date,
+                    'l10n_mx_edi_payment_method_id': l10_payment_method_id.id, 
                 })
 
             # Complete dicts to create both counterpart move lines and write-offs
