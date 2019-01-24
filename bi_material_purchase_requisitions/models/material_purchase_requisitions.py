@@ -372,10 +372,11 @@ class MaterialPurchaseRequisition(models.Model):
         default=lambda self: self.env.context.get('default_project_id'),
         index=True,
         track_visibility='onchange',
-        change_default=True)
+        change_default=True,
+        required=True,)
     pm_id = fields.Many2one('res.users',string="PM",related='project_id.user_id',readonly=True)
     account_analytic_id = fields.Many2one('account.analytic.account', string='Analytic Account',related='project_id.analytic_account_id',readonly=True)
-    analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags')
+    analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags', required=True,)
 
 
 class RequisitionLine(models.Model):
@@ -410,8 +411,8 @@ class RequisitionLine(models.Model):
     requisition_id = fields.Many2one('material.purchase.requisition',string="Requisition Line")
     requisition_action = fields.Selection([('purchase_order','Purchase Order'),('internal_picking','Internal Picking')],default='purchase_order',string="Requisition Action")
     vendor_id = fields.Many2many('res.partner',string="Vendors")
-    account_analytic_id = fields.Many2one('account.analytic.account', string='Analytic Account')
-    analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags')
+    account_analytic_id = fields.Many2one('account.analytic.account', string='Analytic Account', required=True,)
+    analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags', required=True,)
     qty_available = fields.Float(string="Qty Available",related='product_id.qty_available',readonly=True)
     location_id = fields.Many2one('stock.location', string='Location', )
 
