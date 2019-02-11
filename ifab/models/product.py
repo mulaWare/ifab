@@ -16,4 +16,8 @@ from odoo.tools import float_compare, pycompat
 class ProductProduct(models.Model):
     _name = 'product.product'
     _inherit = 'product.product'
+
+    _sql_constraints = [
+        ('barcode_uniq', 'unique(barcode)', "A barcode can only be assigned to one product !"),
+    ]    
     
