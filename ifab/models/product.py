@@ -17,6 +17,3 @@ class ProductProduct(models.Model):
     _name = 'product.product'
     _inherit = 'product.product'
     
-    _sql_constraints = [
-        ('barcode_uniq', 'Check(1=1)', "A barcode can only be assigned to one product !"),
-    ]
