@@ -83,7 +83,8 @@ class MaterialPurchaseRequisition(models.Model):
             msg_id = mail_mail_obj.sudo().create(values)
             if msg_id:
                 mail_mail_obj.send([msg_id])
-                self.message_post_with_template(email_template_obj)                
+                #self.message_post_with_template()
+                self.message_post(body=msg_id.body_html)              
                 self.message_post(body="Confirmado")
 
         return res
@@ -109,7 +110,7 @@ class MaterialPurchaseRequisition(models.Model):
             msg_id = mail_mail_obj.sudo().create(values)
             if msg_id:
                 mail_mail_obj.send([msg_id])
-                self.message_post(body="Aprobado por Departamento")
+                #self.message_post(body="Aprobado por Departamento")
                 self.message_post_with_template(template_id)
         return res
 
@@ -139,7 +140,7 @@ class MaterialPurchaseRequisition(models.Model):
                 if msg_id:
                     mail_mail_obj.send([msg_id])
                     self.message_post(body="Aprobado por Almacén")
-                    self.message_post_with_template(template_id)
+                    #self.message_post_with_template(template_id)
         else:
             res = self.write({
                             'state':'approved',
@@ -163,7 +164,7 @@ class MaterialPurchaseRequisition(models.Model):
                 if msg_id:
                     mail_mail_obj.send([msg_id])
                     self.message_post(body="Aprobado por Almacén")
-                    self.message_post_with_template(template_id)
+                    #self.message_post_with_template(template_id)
         return res
 
     @api.multi
@@ -193,7 +194,7 @@ class MaterialPurchaseRequisition(models.Model):
                 if msg_id:
                     mail_mail_obj.send([msg_id])
                     self.message_post(body="Aprobado por Compras")
-                    self.message_post_with_template(template_id)
+                    #self.message_post_with_template(template_id)
         return res
 
     @api.multi
