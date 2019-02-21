@@ -176,7 +176,7 @@ class MaterialPurchaseRequisition(models.Model):
         if template_id:
                 values = email_template_obj.generate_email(self.id, fields=None)
                 values['email_from'] = self.env.user.partner_id.email
-                values['email_to'] = self.requisition_responsible_id.email + "," + self.employee_id.email
+                values['email_to'] = self.requisition_responsible_id.email
                 values['res_id'] = False
                 mail_mail_obj = self.env['mail.mail']
                 #request.env.uid = 1
