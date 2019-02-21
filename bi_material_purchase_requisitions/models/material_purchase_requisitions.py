@@ -83,6 +83,7 @@ class MaterialPurchaseRequisition(models.Model):
             msg_id = mail_mail_obj.sudo().create(values)
             if msg_id:
                 mail_mail_obj.send([msg_id])
+                self.message_post(body="Confirmado")
         return res
 
     @api.multi
@@ -106,6 +107,7 @@ class MaterialPurchaseRequisition(models.Model):
             msg_id = mail_mail_obj.sudo().create(values)
             if msg_id:
                 mail_mail_obj.send([msg_id])
+                self.message_post(body="Aprobado por Departamento")
         return res
 
     @api.multi
@@ -133,6 +135,7 @@ class MaterialPurchaseRequisition(models.Model):
                 msg_id = mail_mail_obj.sudo().create(values)
                 if msg_id:
                     mail_mail_obj.send([msg_id])
+                    self.message_post(body="Aprobado por Almacén")
         else:
             res = self.write({
                             'state':'approved',
@@ -155,6 +158,7 @@ class MaterialPurchaseRequisition(models.Model):
                 msg_id = mail_mail_obj.sudo().create(values)
                 if msg_id:
                     mail_mail_obj.send([msg_id])
+                    self.message_post(body="Aprobado por Almacén")
         return res
 
     @api.multi
@@ -167,7 +171,7 @@ class MaterialPurchaseRequisition(models.Model):
                             'approved_by_purchase_id':self.env.user.id,
                             'approved_by_id':self.env.user.id,
                             'department_approval_date' : datetime.now(),
-                            'approved_date' : datetime.now()
+                            'approved_date' : datetime.now(),
                             })
         template_id = self.env['ir.model.data'].get_object_reference(
                                                           'bi_material_purchase_requisitions',
@@ -183,6 +187,7 @@ class MaterialPurchaseRequisition(models.Model):
                 msg_id = mail_mail_obj.sudo().create(values)
                 if msg_id:
                     mail_mail_obj.send([msg_id])
+                    self.message_post(body="Aprobado por Compras")
         return res
 
     @api.multi
