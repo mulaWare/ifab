@@ -401,7 +401,7 @@ class MaterialPurchaseRequisition(models.Model):
     department_id = fields.Many2one('hr.department',string="Department",required=True, related='employee_id.department_id', readonly=1)
     stock_dept_id = fields.Many2one('hr.department',string="Stock",required=True, default=lambda self: self.env['hr.department'].browse("Almacén"))
     department_manager_id = fields.Many2one('res.users',string="Manager", related='employee_id.department_id.manager_id.user_id',readonly=1)
-    stock_manager_id = fields.Many2one('res.users',string="Manager", related='stock_id.manager_id.user_id',readonly=1)
+    stock_manager_id = fields.Many2one('res.users',string="Manager", related='stock_dept_id.manager_id.user_id',readonly=1)
     purchase_manager_id = fields.Many2one('res.users',string="Manager", related='employee_id.department_id.manager_id.user_id',readonly=1)
 
     requisition_responsible_id  = fields.Many2one('res.users',string="Requisition Responsible", default=lambda self: self.env.user.id, index=1, readonly=1)
