@@ -394,10 +394,20 @@ class MaterialPurchaseRequisition(models.Model):
             line["analytic_tag_ids"]= [(2, x) for x in line.analytic_tag_ids.ids]
             line["analytic_tag_ids"]= [(4, x) for x in self.analytic_tag_ids.ids]
 
+
+    @api.model
+    def _default_stock(self):
+        stock_id = self.env['hr.department'].browse("Almacén")
+        return stock_id
+
     sequence = fields.Char(string='Sequence', readonly=True,copy =False)
     employee_id = fields.Many2one('hr.employee',string="Employee",required=True)
     department_id = fields.Many2one('hr.department',string="Department",required=True, related='employee_id.department_id', readonly=1)
+    stock_dept_id = fields.Many2one('hr.department',string="Stock",required=True, default="_default_stock")
     department_manager_id = fields.Many2one('res.users',string="Manager", related='employee_id.department_id.manager_id.user_id',readonly=1)
+    stock_manager_id = fields.Many2one('res.users',string="Manager", related='stock_id.manager_id.user_id',readonly=1)
+    purchase_manager_id = fields.Many2one('res.users',string="Manager", related='employee_id.department_id.manager_id.user_id',readonly=1)
+
     requisition_responsible_id  = fields.Many2one('res.users',string="Requisition Responsible", default=lambda self: self.env.user.id, index=1, readonly=1)
     requisition_date = fields.Date(string="Requisition Date",required=True, default=fields.Datetime.now)
     received_date = fields.Date(string="Received Date",readonly=True)

@@ -12,7 +12,7 @@
                     <button name="department_approve" type="object" string="Department Approve" class="btn-primary" attrs="{'invisible': [('state', 'in', ['new','stock_approval','purchase_approval','approved','reject','cancel'])]}" groups="bi_material_purchase_requisitions.group_requisition_department_manager"/>
                     <button name="stock_approve" type="object" string="Stock Approve" class="btn-primary" attrs="{'invisible': [('state', 'in', ['new','department_approval','purchase_approval','approved','reject','cancel'])]}" groups="stock.group_stock_manager"/>
                     <button name="purchase_approve" type="object" string="Purchase Approve" class="btn-primary" attrs="{'invisible': [('state', 'in', ['new','stock_approval','department_approval','approved','reject','cancel'])]}" groups="purchase.group_purchase_manager"/>
-                    <button name="action_reject" type="object" string="Reject" attrs="{'invisible': [('state', 'in', ['new','approved','cancel'])]}" groups="base.group_user"/>
+                    <button name="action_reject" type="object" string="Reject" attrs="{'invisible': [('state', 'in', ['new','approved','cancel'])]}" groups="bi_material_purchase_requisitions.group_requisition_department_manager,stock.group_stock_manager,purchase.group_purchase_manager"/>
                     <button name="action_cancel" type="object" string="Cancel" attrs="{'invisible': [('state', 'in', ['department_approval','stock_approval','purchase_approval','cancel'])]}" groups="base.group_user"/>
                     <button name="action_reset_draft" type="object" string="Reset To Draft" attrs="{'invisible': [('state', 'in', ['new','department_approval','stock_approval','purchase_approval','approved',])]}"/>
                     <field name="state" widget="statusbar" />
@@ -47,6 +47,8 @@
                             <field name="requisition_date"/>
                             <field name="requisition_deadline_date"/>
                             <field name="company_id" invisible="1"/>
+                            <field name="stock_id"/>
+                            <field name="stock_manager_id"/>                    
                         </group>
                     </group>
                     <notebook>
