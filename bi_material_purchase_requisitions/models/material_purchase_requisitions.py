@@ -83,8 +83,9 @@ class MaterialPurchaseRequisition(models.Model):
             msg_id = mail_mail_obj.sudo().create(values)
             if msg_id:
                 mail_mail_obj.send([msg_id])
+                self.message_post_with_template(email_template_obj)                
                 self.message_post(body="Confirmado")
-                self.message_post_with_template(template_id)
+
         return res
 
     @api.multi
