@@ -395,11 +395,10 @@ class MaterialPurchaseRequisition(models.Model):
             line["analytic_tag_ids"]= [(4, x) for x in self.analytic_tag_ids.ids]
 
 
-
     sequence = fields.Char(string='Sequence', readonly=True,copy =False)
     employee_id = fields.Many2one('hr.employee',string="Employee",required=True)
     department_id = fields.Many2one('hr.department',string="Department",required=True, related='employee_id.department_id', readonly=1)
-    stock_dept_id = fields.Many2one('hr.department',string="Stock",required=True, default=lambda self: self.env['hr.department'].search('name','=','Almacén'))
+    stock_dept_id = fields.Many2one('hr.department',string="Stock",required=True, default=lambda self: self.env['hr.department'].search('name','=','Almacén').id)
     department_manager_id = fields.Many2one('res.users',string="Manager", related='employee_id.department_id.manager_id.user_id',readonly=1)
     stock_manager_id = fields.Many2one('res.users',string="Manager", related='stock_dept_id.manager_id.user_id',readonly=1)
     purchase_manager_id = fields.Many2one('res.users',string="Manager", related='employee_id.department_id.manager_id.user_id',readonly=1)
