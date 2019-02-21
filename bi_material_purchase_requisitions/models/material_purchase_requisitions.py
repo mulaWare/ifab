@@ -84,6 +84,7 @@ class MaterialPurchaseRequisition(models.Model):
             if msg_id:
                 mail_mail_obj.send([msg_id])
                 self.message_post(body="Confirmado")
+                self.message_post_with_template(template_id)
         return res
 
     @api.multi
@@ -100,7 +101,7 @@ class MaterialPurchaseRequisition(models.Model):
         if template_id:
             values = email_template_obj.generate_email(self.id, fields=None)
             values['email_from'] = self.env.user.partner_id.email
-            values['email_to'] = "lsanchez@ifab.com.mx"
+            values['email_to'] = self.stock_manager_id.email_to
             values['res_id'] = False
             mail_mail_obj = self.env['mail.mail']
             #request.env.uid = 1
@@ -128,7 +129,7 @@ class MaterialPurchaseRequisition(models.Model):
             if template_id:
                 values = email_template_obj.generate_email(self.id, fields=None)
                 values['email_from'] = self.env.user.partner_id.email
-                values['email_to'] = "aquintana@ifab.com.mx"
+                values['email_to'] = self.purchase_manager_id.email_to
                 values['res_id'] = False
                 mail_mail_obj = self.env['mail.mail']
                 #request.env.uid = 1
@@ -394,19 +395,15 @@ class MaterialPurchaseRequisition(models.Model):
             line["analytic_tag_ids"]= [(2, x) for x in line.analytic_tag_ids.ids]
             line["analytic_tag_ids"]= [(4, x) for x in self.analytic_tag_ids.ids]
 
-    @api.model
-    def _default_stock(self):
-        def_stock = self.env['hr.department'].search('name','=','Almacén').id
-        if def_stock:
-            return def_stock
 
     sequence = fields.Char(string='Sequence', readonly=True,copy =False)
     employee_id = fields.Many2one('hr.employee',string="Employee",required=True)
     department_id = fields.Many2one('hr.department',string="Department",required=True, related='employee_id.department_id', readonly=1)
-    stock_dept_id = fields.Many2one('hr.department',string="Stock",required=True, default=lambda self: self.env['hr.department'].search([('name', '=', 'Almacén')], limit=1).id)
-    department_manager_id = fields.Many2one('res.users',string="Manager", related='employee_id.department_id.manager_id.user_id',readonly=1)
-    stock_manager_id = fields.Many2one('res.users',string="Manager", related='stock_dept_id.manager_id.user_id',readonly=1)
-    purchase_manager_id = fields.Many2one('res.users',string="Manager", related='employee_id.department_id.manager_id.user_id',readonly=1)
+    stock_dept_id = fields.Many2one('hr.department',string="Stock",required=True, default=lambda self: self.env['hr.department'].search([('name', '=', 'Almacén')], limit=1).id,readonly=1)
+    purchase_dept_id = fields.Many2one('hr.department',string="Purchase",required=True, default=lambda self: self.env['hr.department'].search([('name', '=', 'Compras')], limit=1).id,readonly=1)
+    department_manager_id = fields.Many2one('res.users',string="Department Manager", related='employee_id.department_id.manager_id.user_id',readonly=1)
+    stock_manager_id = fields.Many2one('res.users',string="Stock Manager", related='stock_dept_id.manager_id.user_id',readonly=1)
+    purchase_manager_id = fields.Many2one('res.users',string="Purchase Manager", related='purchase_dept_id.manager_id.user_id',readonly=1)
 
     requisition_responsible_id  = fields.Many2one('res.users',string="Requisition Responsible", default=lambda self: self.env.user.id, index=1, readonly=1)
     requisition_date = fields.Date(string="Requisition Date",required=True, default=fields.Datetime.now)
