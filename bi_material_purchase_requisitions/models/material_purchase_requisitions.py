@@ -101,7 +101,7 @@ class MaterialPurchaseRequisition(models.Model):
         if template_id:
             values = email_template_obj.generate_email(self.id, fields=None)
             values['email_from'] = self.env.user.partner_id.email
-            values['email_to'] = self.stock_manager_id.email_to
+            values['email_to'] = self.stock_manager_id.email
             values['res_id'] = False
             mail_mail_obj = self.env['mail.mail']
             #request.env.uid = 1
@@ -109,6 +109,7 @@ class MaterialPurchaseRequisition(models.Model):
             if msg_id:
                 mail_mail_obj.send([msg_id])
                 self.message_post(body="Aprobado por Departamento")
+                self.message_post_with_template(template_id)
         return res
 
     @api.multi
@@ -129,7 +130,7 @@ class MaterialPurchaseRequisition(models.Model):
             if template_id:
                 values = email_template_obj.generate_email(self.id, fields=None)
                 values['email_from'] = self.env.user.partner_id.email
-                values['email_to'] = self.purchase_manager_id.email_to
+                values['email_to'] = self.purchase_manager_id.email
                 values['res_id'] = False
                 mail_mail_obj = self.env['mail.mail']
                 #request.env.uid = 1
@@ -137,6 +138,7 @@ class MaterialPurchaseRequisition(models.Model):
                 if msg_id:
                     mail_mail_obj.send([msg_id])
                     self.message_post(body="Aprobado por Almacén")
+                    self.message_post_with_template(template_id)
         else:
             res = self.write({
                             'state':'approved',
@@ -160,6 +162,7 @@ class MaterialPurchaseRequisition(models.Model):
                 if msg_id:
                     mail_mail_obj.send([msg_id])
                     self.message_post(body="Aprobado por Almacén")
+                    self.message_post_with_template(template_id)
         return res
 
     @api.multi
@@ -189,6 +192,7 @@ class MaterialPurchaseRequisition(models.Model):
                 if msg_id:
                     mail_mail_obj.send([msg_id])
                     self.message_post(body="Aprobado por Compras")
+                    self.message_post_with_template(template_id)
         return res
 
     @api.multi

@@ -5,62 +5,62 @@
 
 
         <record id="email_employee_purchase_requisition" model="mail.template">
-            <field name="name">Approval Request for Purchase Requisition...!!</field>
-            <field name="subject">Approval Request for Purchase Requisition to Purchase Order ${object.sequence or 'n/a' }</field>
+            <field name="name">Solicitud de aprobación de Requisión de Compra</field>
+            <field name="subject">Solicitud de aprobación de Requisión de Compra ${object.sequence or 'n/a' }</field>
             <field name="model_id" ref="bi_material_purchase_requisitions.model_material_purchase_requisition" />
             <field name="auto_delete" eval="True" />
             <field name="body_html"><![CDATA[
                     <div style="font-family: 'Lucica Grande', Ubuntu, Arial, Verdana, sans-serif; font-size: 12px; color: rgb(34, 34, 34); background-color: #FFF; ">
-                        <p>Dear ${object.department_manager_id.name or 'n/a' }</p>
-                        <p> Approve request for Purchase Order Requisition -  ${object.sequence}. </p>
-                        <p> Thank You </p>
+                        <p>Estimado ${object.department_manager_id.name or 'n/a' }</p>
+                        <p> Favor de aprobar la Requición de Compra -  ${object.sequence}. </p>
+                        <p> Gracias </p>
                     </div>
                         ]]>
             </field>
         </record>
 
         <record id="email_manager_purchase_requisition" model="mail.template">
-            <field name="name">Stock Request for Purchase Requisition...!!</field>
-            <field name="subject">Department Request for Purchase Requisition to ${object.sequence or 'n/a' }</field>
+            <field name="name">Almacén - Solicitud de aprobación de Requisión de Compra</field>
+            <field name="subject">Almacén - Solicitud de aprobación de Requisión de Compra ${object.sequence or 'n/a' }</field>
             <field name="model_id" ref="bi_material_purchase_requisitions.model_material_purchase_requisition" />
             <field name="auto_delete" eval="True" />
             <field name="body_html"><![CDATA[
                     <div style="font-family: 'Lucica Grande', Ubuntu, Arial, Verdana, sans-serif; font-size: 12px; color: rgb(34, 34, 34); background-color: #FFF; ">
-                        <p>Dear Stock Manager</p>
-                        <p> Purchase Requisition -  ${object.sequence} is approved by Department Manager. </p>
-                        <p> Please review the available stock, process and approve or reject the purchase requisition.  </p>
-                        <p> Thank You </p>
+                        <p>Estimado ${object.stock_manager_id.name or 'n/a' }</p>
+                        <p> Requisición de Compra -  ${object.sequence} ha sido aprobada por el Gerente de Departamento. </p>
+                        <p> Por favor revise la disponibilidad de stock, procese y apruebe / rechaze la requisición de compra.  </p>
+                        <p> Gracias </p>
                     </div>
                         ]]>
             </field>
         </record>
 
         <record id="email_stock_purchase_requisition" model="mail.template">
-            <field name="name">Purchase Request for Purchase Requisition...!!</field>
-            <field name="subject">Stock Request for Purchase Requisition ${object.sequence or 'n/a' }</field>
+            <field name="name">Compras - Solicitud de aprobación de Requisión de Compra</field>
+            <field name="subject">Compras - Solicitud de aprobación de Requisión de Compra ${object.sequence or 'n/a' }</field>
             <field name="model_id" ref="bi_material_purchase_requisitions.model_material_purchase_requisition" />
             <field name="auto_delete" eval="True" />
             <field name="body_html"><![CDATA[
                     <div style="font-family: 'Lucica Grande', Ubuntu, Arial, Verdana, sans-serif; font-size: 12px; color: rgb(34, 34, 34); background-color: #FFF; ">
-                        <p>Dear Purchase Manager</p>
-                        <p> Purchase Requisition -  ${object.sequence} is approved by Stock Manager. </p>
-                        <p> Please process and approve or reject the purchase requisition.  </p>
-                        <p> Thank You </p>
+                        <p>Estimado ${object.purchase_manager_id.name or 'n/a' }</p>
+                        <p> Requisición de Compra -  ${object.sequence} ha sido aprobada por el Gerente de Almacén. </p>
+                        <p> Por favor revise procese y apruebe / rechaze la requisición de compra.  </p>
+                        <p> Gracias </p>
                     </div>
                         ]]>
             </field>
         </record>
 
         <record id="email_user_purchase_requisition" model="mail.template">
-            <field name="name">Approved Purchase Requisition...!!</field>
-            <field name="subject">Approved Purchase Requisition ${object.sequence or 'n/a' }</field>
+            <field name="name">Requisición de Compra APROBADA</field>
+            <field name="subject">Requisición de Compra APROBADA ${object.sequence or 'n/a' }</field>
             <field name="model_id" ref="bi_material_purchase_requisitions.model_material_purchase_requisition" />
             <field name="auto_delete" eval="True" />
             <field name="body_html"><![CDATA[
                     <div style="font-family: 'Lucica Grande', Ubuntu, Arial, Verdana, sans-serif; font-size: 12px; color: rgb(34, 34, 34); background-color: #FFF; ">
-                        <p>Dear ${object.employee_id.name or 'n/a' } / ${object.requisition_responsible_id.name or 'n/a' }</p>
-                        <p> Request Approved for Purchase Requisition -  ${object.sequence}. </p>
-                        <p> Thank You </p>
+                        <p>Estimado ${object.employee_id.name or 'n/a' } / ${object.requisition_responsible_id.name or 'n/a' }</p>
+                        <p> Requisición de Compra APROBADA -  ${object.sequence}. </p>
+                        <p> Gracias </p>
                     </div>
                         ]]>
             </field>
