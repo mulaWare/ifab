@@ -47,8 +47,8 @@
                             <field name="requisition_date"/>
                             <field name="requisition_deadline_date"/>
                             <field name="company_id" invisible="1"/>
-                            <field name="stock_id"/>
-                            <field name="stock_manager_id"/>                    
+                            <field name="stock_dept_id"/>
+                            <field name="stock_manager_id"/>
                         </group>
                     </group>
                     <notebook>
