@@ -50,6 +50,7 @@
                         ]]>
             </field>
         </record>
+        
 
         <record id="email_user_purchase_requisition" model="mail.template">
             <field name="name">Requisición de Compra APROBADA</field>
