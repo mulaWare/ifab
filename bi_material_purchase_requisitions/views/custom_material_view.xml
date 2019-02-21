@@ -91,7 +91,7 @@
                                     <field name="confirmed_date" readonly="1"/>
                                     <field name="department_approval_date" readonly="1"/>
                                     <field name="stock_approval_date" readonly="1"/>
-                                    <field name="purchase_approval_date" readonly="1"/>                                                                        
+                                    <field name="purchase_approval_date" readonly="1"/>
                                     <field name="approved_date" readonly="1"/>
                                     <field name="rejected_date" readonly="1"/>
                                 </group>
@@ -139,8 +139,8 @@
         <record id="material_purchase_requisition" model="ir.sequence">
             <field name="name">Purchase Requisition</field>
             <field name="code">material.purchase.requisition</field>
-            <field name="prefix">EPR/00</field>
-            <field name="padding">3</field>
+            <field name="prefix">REQ/%(y)s/</field>
+            <field name="padding">5</field>
         </record>
 
         <record id="requisition_line_tree_view" model="ir.ui.view">
