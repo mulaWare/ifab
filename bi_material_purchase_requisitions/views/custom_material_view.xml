@@ -62,7 +62,7 @@
                                     <field name="qty" />
                                     <field name="qty_available" />
                                     <field name="location_id" options="{'no_create': True, 'no_create_edit':True, 'no_open':True, 'no_quick_create': True, }" groups="stock.group_stock_manager"/>
-                                    <field name="uom_id" readonly="1"/>
+                                    <field name="uom_id" options="{'no_create': True, 'no_create_edit':True, 'no_open':True, 'no_quick_create': True, }" groups="stock.group_stock_manager,purchase.group_purchase_manager"/>
                                     <field name="vendor_id" widget="many2many_tags" groups="stock.group_stock_manager,purchase.group_purchase_manager" options="{'no_create': True, 'no_create_edit':True, 'no_open':True, 'no_quick_create': True,}"/>
                                 </tree>
                             </field>
