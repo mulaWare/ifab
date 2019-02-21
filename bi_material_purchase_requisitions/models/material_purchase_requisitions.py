@@ -157,7 +157,8 @@ class MaterialPurchaseRequisition(models.Model):
             if template_id:
                 values = email_template_obj.generate_email(self.id, fields=None)
                 values['email_from'] = self.env.user.partner_id.email
-                values['email_to'] = self.requisition_responsible_id.email + "," + self.employee_id.email
+                values['email_to'] = self.employee_id.work_email
+                values['email_cc'] = self.requisition_responsible_id.email
                 values['res_id'] = False
                 mail_mail_obj = self.env['mail.mail']
                 #request.env.uid = 1
@@ -195,7 +196,7 @@ class MaterialPurchaseRequisition(models.Model):
                 msg_id = mail_mail_obj.sudo().create(values)
                 if msg_id:
                     mail_mail_obj.send([msg_id])
-                    self.message_post_with_template(template_id)                    
+                    self.message_post_with_template(template_id)
                     self.message_post(body="Aprobado por Compras")
 
         return res
@@ -249,6 +250,7 @@ class MaterialPurchaseRequisition(models.Model):
 
                         }
                         stock_move = stock_move_obj.sudo().create(pic_line_val)
+
 
                     else:
                         val = {
