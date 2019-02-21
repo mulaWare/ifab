@@ -88,7 +88,7 @@ class MaterialPurchaseRequisition(models.Model):
     @api.multi
     def department_approve(self):
         res = self.write({
-                            'state':'ir_approve',
+                            'state':'stock_approval',
                             'department_manager_id':self.env.user.id,
                             'department_approval_date' : datetime.now()
                         })
@@ -99,7 +99,7 @@ class MaterialPurchaseRequisition(models.Model):
         if template_id:
             values = email_template_obj.generate_email(self.id, fields=None)
             values['email_from'] = self.env.user.partner_id.email
-            values['email_to'] = self.requisition_responsible_id.email + ",aquintana@ifab.com.mx"
+            values['email_to'] = "lsanchez@ifab.com.mx"
             values['res_id'] = False
             mail_mail_obj = self.env['mail.mail']
             #request.env.uid = 1
@@ -109,26 +109,96 @@ class MaterialPurchaseRequisition(models.Model):
         return res
 
     @api.multi
+    def stock_approve(self):
+
+        self.create_picking()
+
+        if self.is_po():
+            res = self.write({
+                            'state':'purchase_approval',
+                            'approved_by_stock_id':self.env.user.id,
+                            'stock_approval_date' : datetime.now()
+                            })
+            template_id = self.env['ir.model.data'].get_object_reference(
+                                                          'bi_material_purchase_requisitions',
+                                                          'email_stock_purchase_requisition')[1]
+            email_template_obj = self.env['mail.template'].sudo().browse(template_id)
+            if template_id:
+                values = email_template_obj.generate_email(self.id, fields=None)
+                values['email_from'] = self.env.user.partner_id.email
+                values['email_to'] = "aquintana@ifab.com.mx"
+                values['res_id'] = False
+                mail_mail_obj = self.env['mail.mail']
+                #request.env.uid = 1
+                msg_id = mail_mail_obj.sudo().create(values)
+                if msg_id:
+                    mail_mail_obj.send([msg_id])
+        else:
+            res = self.write({
+                            'state':'approved',
+                            'approved_by_stock_id':self.env.user.id,
+                            'approved_by_id':self.env.user.id,
+                            'stock_approval_date' : datetime.now(),
+                            'approved_date' : datetime.now(),
+                            })
+            template_id = self.env['ir.model.data'].get_object_reference(
+                                                          'bi_material_purchase_requisitions',
+                                                          'email_user_purchase_requisition')[1]
+            email_template_obj = self.env['mail.template'].sudo().browse(template_id)
+            if template_id:
+                values = email_template_obj.generate_email(self.id, fields=None)
+                values['email_from'] = self.env.user.partner_id.email
+                values['email_to'] = self.requisition_responsible_id.email + "," + self.employee_id.email
+                values['res_id'] = False
+                mail_mail_obj = self.env['mail.mail']
+                #request.env.uid = 1
+                msg_id = mail_mail_obj.sudo().create(values)
+                if msg_id:
+                    mail_mail_obj.send([msg_id])
+        return res
+
+    @api.multi
+    def purchase_approve(self):
+
+        self.create_po()
+
+        res = self.write({
+                            'state':'approved',
+                            'approved_by_purchase_id':self.env.user.id,
+                            'approved_by_id':self.env.user.id,
+                            'department_approval_date' : datetime.now(),
+                            'approved_date' : datetime.now()
+                            })
+        template_id = self.env['ir.model.data'].get_object_reference(
+                                                          'bi_material_purchase_requisitions',
+                                                          'email_user_purchase_requisition')[1]
+        email_template_obj = self.env['mail.template'].sudo().browse(template_id)
+        if template_id:
+                values = email_template_obj.generate_email(self.id, fields=None)
+                values['email_from'] = self.env.user.partner_id.email
+                values['email_to'] = self.requisition_responsible_id.email + "," + self.employee_id.email
+                values['res_id'] = False
+                mail_mail_obj = self.env['mail.mail']
+                #request.env.uid = 1
+                msg_id = mail_mail_obj.sudo().create(values)
+                if msg_id:
+                    mail_mail_obj.send([msg_id])
+        return res
+
+    @api.multi
     def action_cancel(self):
         res = self.write({
                             'state':'cancel',
                         })
         return res
 
-    @api.multi
-    def action_received(self):
-        res = self.write({
-                            'state':'received',
-                            'received_date' : datetime.now()
-                        })
-        return res
 
     @api.multi
     def action_reject(self):
         res = self.write({
                             'state':'cancel',
                             'rejected_date' : datetime.now(),
-                            'rejected_by' : self.env.user.id
+                            'rejected_by' : self.env.user.id,
                         })
         return res
 
@@ -141,30 +211,67 @@ class MaterialPurchaseRequisition(models.Model):
 
 
     @api.multi
-    def action_approve(self):
-        res = self.write({
-                            'state':'approved',
-                            'approved_by_id':self.env.user.id,
-                            'approved_date' : datetime.now()
-                        })
-        template_id = self.env['ir.model.data'].get_object_reference(
-                                              'bi_material_purchase_requisitions',
-                                              'email_user_purchase_requisition')[1]
-        email_template_obj = self.env['mail.template'].sudo().browse(template_id)
-        if template_id:
-            values = email_template_obj.generate_email(self.id, fields=None)
-            values['email_from'] = self.env.user.partner_id.email
-            values['email_to'] = self.requisition_responsible_id.email
-            values['res_id'] = False
-            mail_mail_obj = self.env['mail.mail']
-            #request.env.uid = 1
-            msg_id = mail_mail_obj.sudo().create(values)
-            if msg_id:
-                mail_mail_obj.send([msg_id])
-        return res
+    def create_picking(self):
+
+        for line in self.requisition_line_ids:
+            if line.requisition_action == 'internal_picking':
+                for vendor in line.vendor_id:
+                    stock_picking_obj = self.env['stock.picking']
+                    stock_move_obj = self.env['stock.move']
+                    stock_picking_type_obj = self.env['stock.picking.type']
+                    picking_type_ids = stock_picking_type_obj.search([('code','=','internal')])
+                    #employee_id = self.env['hr.employee'].search('id','=',self.env.user.name)
+                    pur_order = stock_picking_obj.search([('requisition_picking_id','=',self.id),('partner_id','=',vendor.id)])
+                    if pur_order:
+                        pic_line_val = {
+                                        'name': line.product_id.name,
+                                        'product_id' : line.product_id.id,
+                                        'product_uom_qty' : line.qty,
+                                        'picking_id' : stock_picking.id,
+                                        'product_uom' : line.uom_id.id,
+                                        'location_id': line.location_id.id,
+                                        'location_dest_id' : self.employee_id.destination_location_id.id,
+
+                        }
+                        stock_move = stock_move_obj.sudo().create(pic_line_val)
+
+                    else:
+                        val = {
+                                'partner_id' : vendor.id,
+                                'location_id'  : line.location_id.id,
+                                'location_dest_id' : self.employee_id.destination_location_id.id,
+                                'picking_type_id' : picking_type_ids[0].id,
+                                'company_id': self.env.user.company_id.id,
+                                'requisition_picking_id' : self.id,
+                                'origin' : self.sequence,
+                        }
+                        stock_picking = stock_picking_obj.sudo().create(val)
+                        pic_line_val = {
+                                        'partner_id' : vendor.id,
+                                        'name': line.product_id.name,
+                                        'product_id' : line.product_id.id,
+                                        'product_uom_qty' : line.qty,
+                                        'product_uom' : line.uom_id.id,
+                                        'location_id': line.location_id.id,
+                                        'location_dest_id' : self.employee_id.destination_location_id.id,
+                                        'picking_id' : stock_picking.id
+
+                        }
+                        stock_move = stock_move_obj.sudo().create(pic_line_val)
+        return
 
     @api.multi
-    def create_picking_po(self):
+    def is_po(self):
+        res = False
+
+        for line in self.requisition_line_ids:
+            if line.requisition_action == 'purchase_order':
+                res = True
+                return res
+
+
+    @api.multi
+    def create_po(self):
         purchase_order_obj = self.env['purchase.order']
         purchase_order_line_obj = self.env['purchase.order.line']
 
@@ -217,55 +324,7 @@ class MaterialPurchaseRequisition(models.Model):
                         purchase_order_line = purchase_order_line_obj.sudo().create(po_line_vals)
                         purchase_order_line.onchange_product_id()
                         purchase_order_line['product_qty'] = line.qty
-            else:
-                for vendor in line.vendor_id:
-                    stock_picking_obj = self.env['stock.picking']
-                    stock_move_obj = self.env['stock.move']
-                    stock_picking_type_obj = self.env['stock.picking.type']
-                    picking_type_ids = stock_picking_type_obj.search([('code','=','internal')])
-                    #employee_id = self.env['hr.employee'].search('id','=',self.env.user.name)
-                    pur_order = stock_picking_obj.search([('requisition_picking_id','=',self.id),('partner_id','=',vendor.id)])
-                    if pur_order:
-                        pic_line_val = {
-                                        'name': line.product_id.name,
-                                        'product_id' : line.product_id.id,
-                                        'product_uom_qty' : line.qty,
-                                        'picking_id' : stock_picking.id,
-                                        'product_uom' : line.uom_id.id,
-                                        'location_id': line.location_id.id,
-                                        'location_dest_id' : self.employee_id.destination_location_id.id,
-
-                        }
-                        stock_move = stock_move_obj.sudo().create(pic_line_val)
-
-                    else:
-                        val = {
-                                'partner_id' : vendor.id,
-                                'location_id'  : line.location_id.id,
-                                'location_dest_id' : self.employee_id.destination_location_id.id,
-                                'picking_type_id' : picking_type_ids[0].id,
-                                'company_id': self.env.user.company_id.id,
-                                'requisition_picking_id' : self.id,
-                                'origin' : self.sequence,
-                        }
-                        stock_picking = stock_picking_obj.sudo().create(val)
-                        pic_line_val = {
-                                        'partner_id' : vendor.id,
-                                        'name': line.product_id.name,
-                                        'product_id' : line.product_id.id,
-                                        'product_uom_qty' : line.qty,
-                                        'product_uom' : line.uom_id.id,
-                                        'location_id': line.location_id.id,
-                                        'location_dest_id' : self.employee_id.destination_location_id.id,
-                                        'picking_id' : stock_picking.id
-
-                        }
-                        stock_move = stock_move_obj.sudo().create(pic_line_val)
-
-        res = self.write({
-                            'state':'po_created',
-                        })
-        return res
+        return
 
     @api.multi
     def _get_internal_picking_count(self):
@@ -341,17 +400,21 @@ class MaterialPurchaseRequisition(models.Model):
     state = fields.Selection([
                                 ('new','New'),
                                 ('department_approval','Waiting PM Approval'),
-                                ('ir_approve','Waiting Purchasement Approved'),
+                                ('stock_approval','Waiting Stock Approval'),
+                                ('purchase_approval','Waiting Purchase Approval'),
                                 ('approved','Approved'),
-                                ('po_created','Purchase Order Created'),
-                                ('received','Received'),
+                                ('reject','Rejected'),
                                 ('cancel','Cancel')],string='Stage',default="new")
     requisition_line_ids = fields.One2many('requisition.line','requisition_id',string="Requisition Line ID")
     confirmed_by_id = fields.Many2one('res.users',string="Confirmed By")
     approved_by_id = fields.Many2one('res.users',string="Approved By")
+    approved_by_stock_id = fields.Many2one('res.users',string="Approved By")
+    approved_by_purchase_id = fields.Many2one('res.users',string="Approved By")
     rejected_by = fields.Many2one('res.users',string="Rejected By")
     confirmed_date = fields.Date(string="Confirmed Date",readonly=True)
     department_approval_date = fields.Date(string="Department Approval Date",readonly=True)
+    stock_approval_date = fields.Date(string="Department Approval Date",readonly=True)
+    purchase_approval_date = fields.Date(string="Department Approval Date",readonly=True)
     approved_date = fields.Date(string="Approved Date",readonly=True)
     rejected_date = fields.Date(string="Rejected Date",readonly=True)
     reason_for_requisition = fields.Text(string="Reason For Requisition")

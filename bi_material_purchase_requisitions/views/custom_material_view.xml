@@ -8,14 +8,13 @@
             <field name="arch" type="xml">
                 <form string="Purchase Requisition">
                 <header>
-                    <button name="confirm_requisition" string="Confirm" type="object" class="btn-primary" attrs="{'invisible': [('state', 'in', ['department_approval','ir_approve','approved','po_created','received','cancel'])]}" groups="base.group_user"/>
-                    <button name="action_cancel" type="object" string="Cancel" attrs="{'invisible': [('state', 'in', ['department_approval','ir_approve','approved','po_created','received','cancel'])]}" groups="base.group_user"/>
-                    <button name="department_approve" type="object" string="Department Approve" attrs="{'invisible': [('state', 'in', ['new','ir_approve','approved','po_created','received','cancel'])]}" groups="bi_material_purchase_requisitions.group_requisition_department_manager"/>
-                    <button name="action_reject" type="object" string="Reject" attrs="{'invisible': [('state', 'in', ['new','approved','po_created','received','cancel'])]}" groups="bi_material_purchase_requisitions.group_requisition_department_manager"/>
-                    <button name="action_approve" type="object" string="Approve" attrs="{'invisible': [('state', 'in', ['new','department_approval','po_created','received','cancel','approved'])]}" groups="purchase.group_purchase_manager"/>
-                    <button name="create_picking_po" type="object" string="Create Picking and PO" attrs="{'invisible': [('state', 'in', ['new','department_approval','ir_approve','received','po_created'])]}" groups="purchase.group_purchase_manager"/><!---->
-                    <button name="action_received" type="object" string="Received" attrs="{'invisible': [('state', 'in', ['new','department_approval','ir_approve','approved','received'])]}" groups="purchase.group_purchase_manager"/><!---->
-                    <button name="action_reset_draft" type="object" string="Reset To Draft" attrs="{'invisible': [('state', 'in', ['new','department_approval','ir_approve','approved','po_created'])]}"/>
+                    <button name="confirm_requisition" string="Confirm" type="object" class="btn-primary" attrs="{'invisible': [('state', 'in', ['department_approval','stock_approval','purchase_approval','approved','reject','cancel'])]}" groups="base.group_user"/>
+                    <button name="action_cancel" type="object" string="Cancel" attrs="{'invisible': [('state', 'in', ['cancel'])]}" groups="base.group_user"/>
+                    <button name="department_approve" type="object" string="Department Approve" class="btn-primary" attrs="{'invisible': [('state', 'in', ['new','stock_approval','purchase_approval','approved','reject','cancel'])]}" groups="bi_material_purchase_requisitions.group_requisition_department_manager"/>
+                    <button name="stock_approve" type="object" string="Stock Approve" class="btn-primary" attrs="{'invisible': [('state', 'in', ['new','department_approval','purchase_approval','approved','reject','cancel'])]}" groups="stock.group_stock_manager"/>
+                    <button name="purchase_approve" type="object" string="Purchase Approve" class="btn-primary" attrs="{'invisible': [('state', 'in', ['new','stock_approval','department_approval','approved','reject','cancel'])]}" groups="purchase.group_purchase_manager"/>
+                    <button name="action_reject" type="object" string="Reject" attrs="{'invisible': [('state', 'in', ['new','approved','cancel'])]}" groups="base.group_user"/>
+                    <button name="action_reset_draft" type="object" string="Reset To Draft" attrs="{'invisible': [('state', 'in', ['new','department_approval','stock_approval','purchase_approval','approved',])]}"/>
                     <field name="state" widget="statusbar" />
                 </header>
                 <sheet>
@@ -55,16 +54,16 @@
                         <page string="Requisitions Lines">
                             <field name="requisition_line_ids" widget="one2many_list">
                                 <tree string="Requisitions Lines" editable="bottom">
-                                    <field name="requisition_action" groups="bi_material_purchase_requisitions.group_purchase_requisition_user,bi_material_purchase_requisitions.group_requisition_department_manager,purchase.group_purchase_manager"/>
+                                    <field name="requisition_action" groups="stock.group_stock_manager"/>
                                     <field name="product_id" options="{'no_create': True, 'no_create_edit':True, 'no_open':True, 'no_quick_create': True,}"/>
                                     <field name="account_analytic_id" options="{'no_create': True, 'no_create_edit':True, 'no_open':True, 'no_quick_create': True,}"/>
                                     <field name="analytic_tag_ids" widget="many2many_tags" options="{'color_field': 'color','no_create': True, 'no_create_edit':True, 'no_open':True, 'no_quick_create': True,}"/>
                                     <field name="description" />
                                     <field name="qty" />
                                     <field name="qty_available" />
-                                    <field name="location_id" options="{'no_create': True, 'no_create_edit':True, 'no_open':True, 'no_quick_create': True, }"/>
-                                    <field name="uom_id" options="{'no_create': True, 'no_create_edit':True, 'no_open':True, 'no_quick_create': True, }"/>
-                                    <field name="vendor_id" widget="many2many_tags" groups="bi_material_purchase_requisitions.group_purchase_requisition_user,bi_material_purchase_requisitions.group_requisition_department_manager,purchase.group_purchase_manager" options="{'no_create': True, 'no_create_edit':True, 'no_open':True, 'no_quick_create': True,}"/>
+                                    <field name="location_id" options="{'no_create': True, 'no_create_edit':True, 'no_open':True, 'no_quick_create': True, }" groups="stock.group_stock_manager"/>
+                                    <field name="uom_id" readonly="1"/>
+                                    <field name="vendor_id" widget="many2many_tags" groups="stock.group_stock_manager,purchase.group_purchase_manager" options="{'no_create': True, 'no_create_edit':True, 'no_open':True, 'no_quick_create': True,}"/>
                                 </tree>
                             </field>
                         </page>
@@ -83,13 +82,16 @@
                             <group>
                                 <group>
                                     <field name="confirmed_by_id" readonly="1"/>
-                                    <field name="department_manager_id" readonly="1"/>
                                     <field name="approved_by_id" readonly="1"/>
+                                    <field name="approved_by_stock_id" readonly="1"/>
+                                    <field name="approved_by_purchase_id" readonly="1"/>
                                     <field name="rejected_by" readonly="1"/>
                                 </group>
                                 <group>
                                     <field name="confirmed_date" readonly="1"/>
                                     <field name="department_approval_date" readonly="1"/>
+                                    <field name="stock_approval_date" readonly="1"/>
+                                    <field name="purchase_approval_date" readonly="1"/>                                                                        
                                     <field name="approved_date" readonly="1"/>
                                     <field name="rejected_date" readonly="1"/>
                                 </group>
