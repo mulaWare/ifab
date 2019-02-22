@@ -105,14 +105,13 @@
                       <group name="comm_left">
                           <field name="is_suggest_provider" string="Suggested Provider"/>
                           <field name="suggest_provider" attrs="{'invisible': [('is_suggest_provider', '=',False)]}"/>
-                          <field name="is_tech_specs" attrs="{'invisible': [('suggest_provider', '=',False)]}"/>
-                          <field name="is_quality" attrs="{'invisible': [('suggest_provider', '=',False)]}"/>
-                          <field name="is_price" attrs="{'invisible': [('suggest_provider', '=',False)]}"/>
-                          <field name="is_qty" attrs="{'invisible': [('suggest_provider', '=',False)]}"/>
-                          <field name="is_delivery" attrs="{'invisible': [('suggest_provider', '=',False)]}"/>
+                          <field name="is_tech_specs" attrs="{'invisible': ['|',('is_suggest_provider', '=',False),('suggest_provider', '=',False)]}"/>
+                          <field name="is_quality" attrs="{'invisible': ['|',('is_suggest_provider', '=',False),('suggest_provider', '=',False)]}"/>
+                          <field name="is_price" attrs="{'invisible': ['|',('is_suggest_provider', '=',False),('suggest_provider', '=',False)]}"/>
+                          <field name="is_qty" attrs="{'invisible': ['|',('is_suggest_provider', '=',False),('suggest_provider', '=',False)]}"/>
+                          <field name="is_delivery" attrs="{'invisible': ['|',('is_suggest_provider', '=',False),('suggest_provider', '=',False)]}"/>
                       </group>
                       <group name="comm_right">
-                          <label for="reason_for_requisition"/>
                           <field name="reason_for_requisition"/>
                       </group>
                     </group>
