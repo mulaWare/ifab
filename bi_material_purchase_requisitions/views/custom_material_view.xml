@@ -47,10 +47,21 @@
                             <field name="requisition_date"/>
                             <field name="requisition_deadline_date"/>
                             <field name="company_id" invisible="1"/>
-                            <field name="stock_dept_id"/>
+                            <field name="stock_dept_id" invisible="1"/>
                             <field name="stock_manager_id"/>
-                            <field name="purchase_dept_id"/>
+                            <field name="purchase_dept_id" invisible="1"/>
                             <field name="purchase_manager_id"/>
+                            <field name="is_suggest_provider"/>
+                            <group name="gpo_sugg_provider" string="Suggested Provider" attrs="{'invisible': [('is_suggest_provider', '=',False)]}">
+                              <field name="suggest_provider"/>
+                              <group name="gpo_why" string="Why?" attrs="{'invisible': [('suggest_provider', '=',False)]}">
+                                  <field name="is_tech_specs"/>
+                                  <field name="is_quality"/>
+                                  <field name="is_price"/>
+                                  <field name="is_qty"/>
+                                  <field name="is_delivery"/>
+                              </group>
+                            </group>
                         </group>
                     </group>
                     <notebook>
@@ -66,7 +77,7 @@
                                     <field name="qty_available" />
                                     <field name="location_id" options="{'no_create': True, 'no_create_edit':True, 'no_open':True, 'no_quick_create': True, }" groups="stock.group_stock_manager"/>
                                     <field name="uom_id" options="{'no_create': True, 'no_create_edit':True, 'no_open':True, 'no_quick_create': True, }" groups="stock.group_stock_manager,purchase.group_purchase_manager"/>
-                                    <field name="vendor_id" widget="many2many_tags" groups="stock.group_stock_manager,purchase.group_purchase_manager" options="{'no_create': True, 'no_create_edit':True, 'no_open':True, 'no_quick_create': True,}"/>
+                                    <field name="vendor_id" widget="many2many_tags" options="{'no_create': True, 'no_create_edit':True, 'no_open':True, 'no_quick_create': True,}"/>
                                 </tree>
                             </field>
                         </page>

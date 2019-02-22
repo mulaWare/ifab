@@ -406,6 +406,10 @@ class MaterialPurchaseRequisition(models.Model):
             line["analytic_tag_ids"]= [(2, x) for x in line.analytic_tag_ids.ids]
             line["analytic_tag_ids"]= [(4, x) for x in self.analytic_tag_ids.ids]
 
+    READONLY_STATES = {
+        'approved': [('readonly', True)],
+        'cancel': [('readonly', True)],
+    }
 
     sequence = fields.Char(string='Sequence', readonly=True,copy =False)
     employee_id = fields.Many2one('hr.employee',string="Employee",required=True)
@@ -463,6 +467,14 @@ class MaterialPurchaseRequisition(models.Model):
     pm_id = fields.Many2one('res.users',string="PM",related='project_id.user_id',readonly=True)
     account_analytic_id = fields.Many2one('account.analytic.account', string='Analytic Account',related='project_id.analytic_account_id',readonly=True)
     analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags', required=True,)
+
+    is_suggest_provider = fields.Boolean(string='Want to suggest a provider ?')
+    suggest_provider = fields.Many2one('res.partner', string='Vendor', states=READONLY_STATES, help="You can find a suggested vendor.")
+    is_tech_specs = fields.Boolean(string='Is technical specs ok ?', states=READONLY_STATES)
+    is_quality = fields.Boolean(string='Is Qualtity specs ok ?', states=READONLY_STATES)
+    is_price = fields.Boolean(string='Is Price right ?', states=READONLY_STATES)
+    is_qty = fields.Boolean(string='Is Quantity ok ?', states=READONLY_STATES)
+    is_delivery = fields.Boolean(string='Is Delivery time ok ?', states=READONLY_STATES)
 
 
 class RequisitionLine(models.Model):
