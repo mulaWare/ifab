@@ -51,17 +51,6 @@
                             <field name="stock_manager_id"/>
                             <field name="purchase_dept_id" invisible="1"/>
                             <field name="purchase_manager_id"/>
-                            <field name="is_suggest_provider"/>
-                            <group name="gpo_sugg_provider" string="Suggested Provider" attrs="{'invisible': [('is_suggest_provider', '=',False)]}">
-                              <field name="suggest_provider"/>
-                              <group name="gpo_why" string="Why?" attrs="{'invisible': [('suggest_provider', '=',False)]}">
-                                  <field name="is_tech_specs"/>
-                                  <field name="is_quality"/>
-                                  <field name="is_price"/>
-                                  <field name="is_qty"/>
-                                  <field name="is_delivery"/>
-                              </group>
-                            </group>
                         </group>
                     </group>
                     <notebook>
@@ -112,6 +101,17 @@
                             </group>
                         </page>
                     </notebook>
+                    <field name="is_suggest_provider"/>
+                    <group name="gpo_sugg_provider" string="Suggested Provider" attrs="{'invisible': [('is_suggest_provider', '=',False)]}">
+                      <field name="suggest_provider"/>
+                      <group name="gpo_why" string="Why?" attrs="{'invisible': [('suggest_provider', '=',False)]}">
+                          <field name="is_tech_specs"/>
+                          <field name="is_quality"/>
+                          <field name="is_price"/>
+                          <field name="is_qty"/>
+                          <field name="is_delivery"/>
+                      </group>
+                    </group>
                     <label for="reason_for_requisition"/>
                     <field name="reason_for_requisition"/>
                 </sheet>
