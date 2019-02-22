@@ -103,7 +103,7 @@
                     </notebook>
                     <group name="comments" string="Comments">
                       <group name="comm_left">
-                          <field name="is_suggest_provider" string="Suggested Provider"/>
+                          <field name="is_suggest_provider"/>
                           <field name="suggest_provider" attrs="{'invisible': [('is_suggest_provider', '=',False)]}"/>
                           <field name="is_tech_specs" attrs="{'invisible': ['|',('is_suggest_provider', '=',False),('suggest_provider', '=',False)]}"/>
                           <field name="is_quality" attrs="{'invisible': ['|',('is_suggest_provider', '=',False),('suggest_provider', '=',False)]}"/>
