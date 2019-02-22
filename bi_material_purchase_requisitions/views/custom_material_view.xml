@@ -101,19 +101,21 @@
                             </group>
                         </page>
                     </notebook>
-                    <field name="is_suggest_provider"/>
-                    <group name="gpo_sugg_provider" string="Suggested Provider" attrs="{'invisible': [('is_suggest_provider', '=',False)]}">
-                      <field name="suggest_provider"/>
-                      <group name="gpo_why" string="Why?" attrs="{'invisible': [('suggest_provider', '=',False)]}">
-                          <field name="is_tech_specs"/>
-                          <field name="is_quality"/>
-                          <field name="is_price"/>
-                          <field name="is_qty"/>
-                          <field name="is_delivery"/>
+                    <group name="comments" string="Comments">
+                      <group name="comm_left">
+                          <field name="is_suggest_provider" string="Suggested Provider"/>
+                          <field name="suggest_provider" attrs="{'invisible': [('is_suggest_provider', '=',False)]}"/>
+                          <field name="is_tech_specs" attrs="{'invisible': [('suggest_provider', '=',False)]}"/>
+                          <field name="is_quality" attrs="{'invisible': [('suggest_provider', '=',False)]}"/>
+                          <field name="is_price" attrs="{'invisible': [('suggest_provider', '=',False)]}"/>
+                          <field name="is_qty" attrs="{'invisible': [('suggest_provider', '=',False)]}"/>
+                          <field name="is_delivery" attrs="{'invisible': [('suggest_provider', '=',False)]}"/>
+                      </group>
+                      <group name="comm_right">
+                          <label for="reason_for_requisition"/>
+                          <field name="reason_for_requisition"/>
                       </group>
                     </group>
-                    <label for="reason_for_requisition"/>
-                    <field name="reason_for_requisition"/>
                 </sheet>
                 <div class="oe_chatter">
                     <field name="message_follower_ids" widget="mail_followers"/>
