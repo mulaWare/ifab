@@ -27,7 +27,9 @@
                             <field name="is_quality"/>
                             <field name="is_price"/>
                             <field name="is_qty"/>
-                            <field name="is_delivery"/>
+                            <field name="is_delivery" widget="radio"
+                            class="oe_edit_only"
+                            options="{'horizontal': true}"/>
                             <field name="is_ok" widget="radio"
                             class="oe_edit_only"
                             options="{'horizontal': true}"/>
