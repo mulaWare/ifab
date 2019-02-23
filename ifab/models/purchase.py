@@ -133,7 +133,7 @@ class PurchaseOrder(models.Model):
     is_qty = fields.Boolean(string='Is Quantity ok ?', states=READONLY_STATES)
     is_delivery = fields.Boolean(string='Is Delivery time ok ?', states=READONLY_STATES)
     is_ok = fields.Boolean(string='Is authorized ?', states=READONLY_STATES)
-    is_verification = = fields.Many2one('res.users',string="Verification Responsible", default=lambda self: self.env.user.id, index=1, states=READONLY_STATES)
+    is_verification = fields.Many2one('res.users',string="Verification Responsible", default=lambda self: self.env.user.id, index=1, states=READONLY_STATES)
 
 class PurchaseOrderLine(models.Model):
     _name = 'purchase.order.line'
