@@ -19,7 +19,7 @@
     'version': '0.2',
 
     # any module necessary for this one to work correctly
-        'depends': ['base','account','l10n_mx_edi','project','purchase','purchase_requisition', ],
+        'depends': ['base','account','l10n_mx_edi','project','purchase','purchase_requisition', 'stock',],
 
     # always loaded
     'data': [
@@ -29,6 +29,7 @@
         'views/payments.xml',
         'views/project.xml',
         'views/purchase.xml',
+        'views/stock_picking.xml',        
     ],
     # only loaded in demonstration mode
     'demo': [

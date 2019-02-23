@@ -7,3 +7,4 @@ from . import account_invoice
 from . import purchase
 from . import account_bank_statement
 from . import product
+from . import stock_picking
