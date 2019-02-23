@@ -127,6 +127,14 @@ class PurchaseOrder(models.Model):
     account_analytic_id = fields.Many2one('account.analytic.account', string='Analytic Account',related='project_id.analytic_account_id',readonly=True)
     analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags')
 
+    is_tech_specs = fields.Boolean(string='Is technical specs ok ?', states=READONLY_STATES)
+    is_quality = fields.Boolean(string='Is Qualtity specs ok ?', states=READONLY_STATES)
+    is_price = fields.Boolean(string='Is Price right ?', states=READONLY_STATES)
+    is_qty = fields.Boolean(string='Is Quantity ok ?', states=READONLY_STATES)
+    is_delivery = fields.Boolean(string='Is Delivery time ok ?', states=READONLY_STATES)
+    is_ok = fields.Boolean(string='Is authorized ?', states=READONLY_STATES)
+    is_verification = = fields.Many2one('res.users',string="Verification Responsible", default=lambda self: self.env.user.id, index=1, states=READONLY_STATES)
+
 class PurchaseOrderLine(models.Model):
     _name = 'purchase.order.line'
     _inherit = "purchase.order.line"
