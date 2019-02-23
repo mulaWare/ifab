@@ -26,7 +26,7 @@ class ProductProduct(models.Model):
 
     default_code = fields.Char(
             'Internal Reference', default=compute_default_value,
-            readonly=True, copy=False)
+            , copy=False)
 
     barcode = fields.Char(
         'Barcode', copy=False, oldname='ean13',
