@@ -20,6 +20,11 @@ class Picking(models.Model):
     _name = "stock.picking"
     _inherit = "stock.picking"
 
+    READONLY_STATES = {
+        'done': [('readonly', True)],
+        'cancel': [('readonly', True)],
+    }
+
     is_tech_specs = fields.Boolean(string='Is technical specs ok ?', states=READONLY_STATES)
     is_quality = fields.Boolean(string='Is Qualtity specs ok ?', states=READONLY_STATES)
     is_price = fields.Boolean(string='Is Price right ?', states=READONLY_STATES)
