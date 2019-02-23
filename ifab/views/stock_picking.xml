@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+   <data>
+      <record id="view_picking_form_ifab" model="ir.ui.view">
+            <field name="name">stock.picking.form_ifab</field>
+            <field name="model">stock.picking</field>
+            <field name="inherit_id" ref="stock.view_picking_form"/>
+            <field name="arch" type="xml">
+              <xpath expr="//form[1]/sheet[1]/group[1]" position="replace">
+                      <group>
+                        <group>
+                            <field name="partner_id"/>
+                            <field name="location_id" groups="stock.group_stock_multi_locations" attrs="{'invisible': [('picking_type_code', '=', 'incoming')]}" domain="['|', ('company_id', '=', company_id), ('company_id', '=', False)]"/>
+                            <field name="location_dest_id" groups="stock.group_stock_multi_locations" attrs="{'invisible': [('picking_type_code', '=', 'outgoing')]}" domain="['|', ('company_id', '=', company_id), ('company_id', '=', False)]"/>
+                            <field name="picking_type_id" attrs="{'readonly': [('state', '!=', 'draft')]}"/>
+                            <field name="backorder_id" readonly="1" attrs="{'invisible': [('backorder_id','=',False)]}"/>
+                            <field name="scheduled_date" attrs="{'readonly': ['|', ('id', '=', False), ('state', 'in', ('done', 'cancel'))], 'required': [('id', '!=', False)]}"/>
+                            <field name="date_done" string="Effective Date" attrs="{'invisible': [('state', '!=', 'done')]}"/>
+                            <field name="origin" placeholder="e.g. PO0032"/>
+                            <field name="owner_id" groups="stock.group_tracking_owner"/>
+                            <div groups="stock.group_tracking_owner" colspan="2" col="2">
+                                <button name="action_assign_owner" string="Assign Owner" type="object" attrs="{'invisible': ['|',('move_line_exist', '=', False),('state', 'not in', ('draft','assigned','confirmed'))]}"
+                                    class="oe_link"/>
+                            </div>
+                        </group>
+                        <group name="evaluation" string="Evaluación Recepción de Insumos">
+                            <field name="is_tech_specs"/>
+                            <field name="is_quality"/>
+                            <field name="is_price"/>
+                            <field name="is_qty"/>
+                            <field name="is_delivery"/>
+                            <field name="is_ok" widget="radio"
+                            options="{'horizontal': true}"/>
+                            <field name="is_verification" readonly="1"/>
+                            <field name="is_date" readonly="1"/>
+                        </group>
+                    </group>
+              </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>
