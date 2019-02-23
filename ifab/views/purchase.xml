@@ -28,8 +28,11 @@
                             <field name="is_price"/>
                             <field name="is_qty"/>
                             <field name="is_delivery"/>
-                            <field name="is_ok"/>
-                            <field name="is_verification"/>
+                            <field name="is_ok" widget="radio"
+                            class="oe_edit_only"
+                            options="{'horizontal': true}"/>
+                            <field name="is_verification" readonly="1"/>
+                            <field name="is_date" readonly="1"/>
                         </group>
                     </group>
               </xpath>
