@@ -23,6 +23,8 @@
                             <field name="date_order"/>
                             <field name="origin" attrs="{'invisible': [('origin','=',False)]}"/>
                             <field name="company_id" groups="base.group_multi_company" options="{'no_create': True, 'no_create_edit':True}"/>
+                        </group>
+                        <group name="evaluation" string="Evaluación">
                             <field name="is_tech_specs"/>
                             <field name="is_quality"/>
                             <field name="is_price"/>

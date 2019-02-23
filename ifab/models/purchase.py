@@ -16,6 +16,12 @@ class PurchaseOrder(models.Model):
     _name = "purchase.order"
     _inherit = "purchase.order"
 
+    READONLY_STATES = {
+        'purchase': [('readonly', True)],
+        'done': [('readonly', True)],
+        'cancel': [('readonly', True)],
+    }
+
     @api.onchange('requisition_id')
     def _onchange_requisition_id(self):
         if not self.requisition_id:
