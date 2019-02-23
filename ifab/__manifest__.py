@@ -29,6 +29,7 @@
         'views/payments.xml',
         'views/project.xml',
         'views/purchase.xml',
+        'views/stock_picking.xml',        
     ],
     # only loaded in demonstration mode
     'demo': [
