@@ -31,7 +31,7 @@
                             <field name="is_qty"/>
                             <field name="is_delivery"/>
                             <field name="is_ok"/>
-                            <field name="is_verification"/>
+                            <field name="is_verification"/> 
                         </group>
                     </group>
               </xpath>
