@@ -25,7 +25,7 @@ class ProductProduct(models.Model):
         return res
 
     default_code = fields.Char(
-            'Internal Reference', default=compute_default_value, copy=False)
+            'Internal Reference', default=compute_default_value, readonly=True, copy=False)
 
     barcode = fields.Char(
         'Barcode', copy=False, oldname='ean13',
@@ -47,7 +47,7 @@ class ProductTemplate(models.Model):
     # related to display product product information if is_product_variant
     barcode = fields.Char('Barcode', oldname='ean13', related='product_variant_ids.barcode', readonly=False)
     default_code = fields.Char(
-        'Internal Reference', compute='_compute_default_code',
+        'Internal Reference', compute='_compute_default_code', readonly=True, 
         inverse='_set_default_code', copy=False, store=True)
 
 
