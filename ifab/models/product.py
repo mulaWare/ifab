@@ -25,8 +25,7 @@ class ProductProduct(models.Model):
         return res
 
     default_code = fields.Char(
-            'Internal Reference', default=compute_default_value,
-            , copy=False)
+            'Internal Reference', default=compute_default_value, copy=False)
 
     barcode = fields.Char(
         'Barcode', copy=False, oldname='ean13',
@@ -49,7 +48,7 @@ class ProductTemplate(models.Model):
     barcode = fields.Char('Barcode', oldname='ean13', related='product_variant_ids.barcode', readonly=False)
     default_code = fields.Char(
         'Internal Reference', compute='_compute_default_code',
-        inverse='_set_default_code', readonly=True, copy=False, store=True)
+        inverse='_set_default_code', copy=False, store=True)
 
 
     _sql_constraints = [
