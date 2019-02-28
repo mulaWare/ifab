@@ -481,7 +481,7 @@ class MaterialPurchaseRequisition(models.Model):
 
 class ReqLineProvider(models.Model):
     _name = "requisition.provider"
-    _rec_name = 'name'
+    _rec_name = 'suggest_provider'
 
     @api.model
     def create(self , vals):
