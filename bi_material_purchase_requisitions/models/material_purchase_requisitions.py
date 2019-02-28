@@ -468,13 +468,21 @@ class MaterialPurchaseRequisition(models.Model):
     account_analytic_id = fields.Many2one('account.analytic.account', string='Analytic Account',related='project_id.analytic_account_id',readonly=True)
     analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags', required=True,)
 
-    is_suggest_provider = fields.Boolean(string='Want to suggest a provider ?')
+
     suggest_provider = fields.Many2one('res.partner', string='Vendor', states=READONLY_STATES, help="You can find a suggested vendor.")
     is_tech_specs = fields.Boolean(string='Is technical specs ok ?', states=READONLY_STATES)
     is_quality = fields.Boolean(string='Is Qualtity specs ok ?', states=READONLY_STATES)
     is_price = fields.Boolean(string='Is Price right ?', states=READONLY_STATES)
     is_qty = fields.Boolean(string='Is Quantity ok ?', states=READONLY_STATES)
     is_delivery = fields.Boolean(string='Is Delivery time ok ?', states=READONLY_STATES)
+
+
+class ReqLineProvider(models.Model):
+    _name = "requisition.provider"
+
+    suggest_provider = fields.Many2one('res.partner', string='Vendor', help="You can find a suggested vendor.")
+    requisition_line_id = fields.Many2one('requisition.line',string="Requisition Line")
+
 
 
 class RequisitionLine(models.Model):
@@ -513,7 +521,8 @@ class RequisitionLine(models.Model):
     analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags', required=True,)
     qty_available = fields.Float(string="Qty Available",related='product_id.qty_available',readonly=True)
     location_id = fields.Many2one('stock.location', string='Location', )
-
+    is_suggest_provider = fields.Boolean(string='Want to suggest a provider ?')
+    suggest_provider_id = fields.Many2one('requisition.provider')
 
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
