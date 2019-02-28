@@ -68,7 +68,7 @@
                                     <field name="uom_id" options="{'no_create': True, 'no_create_edit':True, 'no_open':True, 'no_quick_create': True, }" groups="stock.group_stock_manager,purchase.group_purchase_manager"/>
                                     <field name="vendor_id" widget="many2many_tags" options="{'no_create': True, 'no_create_edit':True, 'no_open':True, 'no_quick_create': True,}"/>
                                     <field name="is_suggest_provider" />
-                                    <field name="suggest_provider_id" widget="many2onebutton"/>  
+                                    <field name="suggest_provider_id" widget="many2onebutton" options="{'color_field': 'color','no_create': True, 'no_create_edit':True, 'no_open':True, 'no_quick_create': True,}"/>  
                                 </tree>
                             </field>
                         </page>
