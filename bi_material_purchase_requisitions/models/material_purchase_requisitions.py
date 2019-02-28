@@ -480,7 +480,15 @@ class MaterialPurchaseRequisition(models.Model):
 
 class ReqLineProvider(models.Model):
     _name = "requisition.provider"
+    _rec_name = 'name'
 
+    @api.model
+    def create(self , vals):
+        vals['name'] = self.env['ir.sequence'].next_by_code('requisition.provider') or '/'
+        return super(ReqLineProvider, self).create(vals)
+
+
+    name = fields.Char(string='Name', readonly=True,copy =False)
     suggest_provider = fields.Many2one('res.partner', string='Vendor', help="You can find a suggested vendor.")
     requisition_line_id = fields.Many2one('requisition.line',string="Requisition Line")
 

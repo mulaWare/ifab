@@ -68,7 +68,7 @@
                                     <field name="uom_id" options="{'no_create': True, 'no_create_edit':True, 'no_open':True, 'no_quick_create': True, }" groups="stock.group_stock_manager,purchase.group_purchase_manager"/>
                                     <field name="vendor_id" widget="many2many_tags" options="{'no_create': True, 'no_create_edit':True, 'no_open':True, 'no_quick_create': True,}"/>
                                     <field name="is_suggest_provider" />
-                                    <field name="suggest_provider_id" widget="many2onebutton" options="{'color_field': 'color','no_create': True, 'no_create_edit':True, 'no_open':True, 'no_quick_create': True,}"/>  
+                                    <field name="suggest_provider_id" widget="many2onebutton" options="{'color_field': 'color','no_create': True, 'no_create_edit':True, 'no_open':True, 'no_quick_create': True,}"/>
                                 </tree>
                             </field>
                         </page>
@@ -158,6 +158,13 @@
             <field name="code">material.purchase.requisition</field>
             <field name="prefix">REQ/%(y)s/</field>
             <field name="padding">5</field>
+        </record>
+
+        <record id="requisition_provider" model="ir.sequence">
+            <field name="name">Requisition Provider</field>
+            <field name="code">requisition.provider</field>
+            <field name="prefix">P/%(y)s/</field>
+            <field name="padding">6</field>
         </record>
 
         <record id="requisition_line_tree_view" model="ir.ui.view">
