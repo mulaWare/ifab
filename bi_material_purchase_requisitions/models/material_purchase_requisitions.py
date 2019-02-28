@@ -12,6 +12,7 @@ class MaterialPurchaseRequisition(models.Model):
     _name = "material.purchase.requisition"
     _rec_name = 'sequence'
     _inherit = ['mail.thread', 'mail.activity.mixin', 'portal.mixin']
+    _order = "sequence desc, id desc"
 
     @api.model
     def create(self , vals):
