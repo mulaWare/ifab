@@ -532,7 +532,7 @@ class RequisitionLine(models.Model):
     qty_available = fields.Float(string="Qty Available",related='product_id.qty_available',readonly=True)
     location_id = fields.Many2one('stock.location', string='Location', )
     is_suggest_provider = fields.Boolean(string='Want to suggest a provider ?')
-    suggest_provider_id = fields.Many2one('requisition.provider')
+    suggest_provider_id = fields.Many2one('res.partner', string='Vendor',)
 
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
