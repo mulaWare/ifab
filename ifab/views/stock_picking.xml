@@ -24,7 +24,8 @@
                             </div>
                         </group>
                         <group name="evaluation" string="Evaluación Recepción de Insumos" attrs="{'invisible': [('is_internal_picking','=',True)]}">
-                            <field name="is_internal_picking" invisible="1"/>
+                            <field name="is_internal_picking" />
+                            <field name="company_id"/>
                             <field name="is_tech_specs"/>
                             <field name="is_quality"/>
                             <field name="is_price"/>
