@@ -213,10 +213,28 @@ class MaterialPurchaseRequisition(models.Model):
     @api.multi
     def action_reject(self):
         res = self.write({
-                            'state':'cancel',
+                            'state':'reject',
                             'rejected_date' : datetime.now(),
                             'rejected_by' : self.env.user.id,
                         })
+        template_id = self.env['ir.model.data'].get_object_reference(
+                                                          'bi_material_purchase_requisitions',
+                                                          'email_user_reject_purchase_requisition')[1]
+        email_template_obj = self.env['mail.template'].sudo().browse(template_id)
+        if template_id:
+                values = email_template_obj.generate_email(self.id, fields=None)
+                values['email_from'] = self.env.user.partner_id.email
+                values['email_to'] = self.employee_id.work_email
+                values['email_cc'] = self.requisition_responsible_id.email
+                values['res_id'] = False
+                mail_mail_obj = self.env['mail.mail']
+                #request.env.uid = 1
+                msg_id = mail_mail_obj.sudo().create(values)
+                if msg_id:
+                    mail_mail_obj.send([msg_id])
+                    self.message_post_with_template(template_id)
+                    self.message_post(body="Rechazado por Compras")
+
         return res
 
     @api.multi
@@ -445,7 +463,7 @@ class MaterialPurchaseRequisition(models.Model):
     purchase_approval_date = fields.Date(string="Purchase Approval Date",readonly=True)
     approved_date = fields.Date(string="Approved Date",readonly=True)
     rejected_date = fields.Date(string="Rejected Date",readonly=True)
-    reason_for_requisition = fields.Text(string="Reason For Requisition")
+    reason_for_requisition = fields.Text(string="Reason For Requisition", states=READONLY_STATES, )
     source_location_id = fields.Many2one('stock.location',string="Source Location")
     destination_location_id = fields.Many2one('stock.location',string="Destination Location",compute="_get_emp_destination")
     internal_picking_id = fields.Many2one('stock.picking',string="Internal Picking")
