@@ -63,12 +63,16 @@
                                     <field name="analytic_tag_ids" widget="many2many_tags" options="{'color_field': 'color','no_create': True, 'no_create_edit':True, 'no_open':True, 'no_quick_create': True,}"/>
                                     <field name="description" />
                                     <field name="qty" />
-                                    <field name="qty_available" />
+                                    <field name="qty_available" groups="stock.group_stock_manager"/>
                                     <field name="location_id" options="{'no_create': True, 'no_create_edit':True, 'no_open':True, 'no_quick_create': True, }" groups="stock.group_stock_manager"/>
                                     <field name="uom_id" options="{'no_create': True, 'no_create_edit':True, 'no_open':True, 'no_quick_create': True, }" groups="stock.group_stock_manager,purchase.group_purchase_manager"/>
                                     <field name="vendor_id" widget="many2many_tags" options="{'no_create': True, 'no_create_edit':True, 'no_open':True, 'no_quick_create': True,}"/>
                                     <field name="is_suggest_provider" />
-                                    <field name="suggest_provider_id" widget="many2onebutton"/>
+                                    <field name="suggest_provider_id" attrs="{'invisible': [('is_suggest_provider','=',False)]}", options="{'no_create': True, 'no_create_edit':True, 'no_open':True, 'no_quick_create': True,}"/>
+                                    <field name="why_prov" attrs="{'invisible': [('is_suggest_provider','=',False)]}"/>
+                                    <field name="other_prov" attrs="{'invisible': [('why_prov','!=','other')]}"/>
+                                    <field name="is_tech_specs" />
+                                    <field name="tech_specs" attrs="{'invisible': [('is_tech_specs','=',False)]}"/>
                                 </tree>
                             </field>
                         </page>
@@ -104,16 +108,7 @@
                         </page>
                     </notebook>
                     <group name="comments" string="Comments">
-                      <group name="comm_left">
-                          <field name="is_suggest_provider"/>
-                          <field name="suggest_provider" attrs="{'invisible': [('is_suggest_provider', '=',False)]}"/>
-                          <field name="is_tech_specs" attrs="{'invisible': ['|',('is_suggest_provider', '=',False),('suggest_provider', '=',False)]}"/>
-                          <field name="is_quality" attrs="{'invisible': ['|',('is_suggest_provider', '=',False),('suggest_provider', '=',False)]}"/>
-                          <field name="is_price" attrs="{'invisible': ['|',('is_suggest_provider', '=',False),('suggest_provider', '=',False)]}"/>
-                          <field name="is_qty" attrs="{'invisible': ['|',('is_suggest_provider', '=',False),('suggest_provider', '=',False)]}"/>
-                          <field name="is_delivery" attrs="{'invisible': ['|',('is_suggest_provider', '=',False),('suggest_provider', '=',False)]}"/>
-                      </group>
-                      <group name="comm_right">
+                      <group name="comm_right" string="Reason for requisition">
                           <field name="reason_for_requisition"/>
                       </group>
                     </group>
@@ -158,13 +153,6 @@
             <field name="code">material.purchase.requisition</field>
             <field name="prefix">REQ/%(y)s/</field>
             <field name="padding">5</field>
-        </record>
-
-        <record id="requisition_provider" model="ir.sequence">
-            <field name="name">Requisition Provider</field>
-            <field name="code">requisition.provider</field>
-            <field name="prefix">P/%(y)s/</field>
-            <field name="padding">6</field>
         </record>
 
         <record id="requisition_line_tree_view" model="ir.ui.view">

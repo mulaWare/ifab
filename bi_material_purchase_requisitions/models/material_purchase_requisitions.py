@@ -413,18 +413,18 @@ class MaterialPurchaseRequisition(models.Model):
     }
 
     sequence = fields.Char(string='Sequence', readonly=True,copy =False)
-    employee_id = fields.Many2one('hr.employee',string="Employee",required=True)
-    department_id = fields.Many2one('hr.department',string="Department",required=True, related='employee_id.department_id', readonly=1)
-    stock_dept_id = fields.Many2one('hr.department',string="Stock",required=True, default=lambda self: self.env['hr.department'].search([('name', '=', 'Almacén')], limit=1).id,readonly=1)
-    purchase_dept_id = fields.Many2one('hr.department',string="Purchase",required=True, default=lambda self: self.env['hr.department'].search([('name', '=', 'Compras')], limit=1).id,readonly=1)
-    department_manager_id = fields.Many2one('res.users',string="Department Manager", related='employee_id.department_id.manager_id.user_id',readonly=1)
-    stock_manager_id = fields.Many2one('res.users',string="Stock Manager", related='stock_dept_id.manager_id.user_id',readonly=1)
-    purchase_manager_id = fields.Many2one('res.users',string="Purchase Manager", related='purchase_dept_id.manager_id.user_id',readonly=1)
+    employee_id = fields.Many2one('hr.employee',string="Employee",required=True, states=READONLY_STATES,)
+    department_id = fields.Many2one('hr.department',string="Department",required=True, states=READONLY_STATES, related='employee_id.department_id', readonly=1)
+    stock_dept_id = fields.Many2one('hr.department',string="Stock",required=True,states=READONLY_STATES, default=lambda self: self.env['hr.department'].search([('name', '=', 'Almacén')], limit=1).id,readonly=1)
+    purchase_dept_id = fields.Many2one('hr.department',string="Purchase",required=True, states=READONLY_STATES, default=lambda self: self.env['hr.department'].search([('name', '=', 'Compras')], limit=1).id,readonly=1)
+    department_manager_id = fields.Many2one('res.users',string="Department Manager", states=READONLY_STATES, related='employee_id.department_id.manager_id.user_id',readonly=1)
+    stock_manager_id = fields.Many2one('res.users',string="Stock Manager", states=READONLY_STATES, related='stock_dept_id.manager_id.user_id',readonly=1)
+    purchase_manager_id = fields.Many2one('res.users',string="Purchase Manager", states=READONLY_STATES, related='purchase_dept_id.manager_id.user_id',readonly=1)
 
-    requisition_responsible_id  = fields.Many2one('res.users',string="Requisition Responsible", default=lambda self: self.env.user.id, index=1, readonly=1)
-    requisition_date = fields.Date(string="Requisition Date",required=True, default=fields.Datetime.now)
-    received_date = fields.Date(string="Received Date",readonly=True)
-    requisition_deadline_date = fields.Date(string="Requisition Deadline",required=True, default=fields.Datetime.now)
+    requisition_responsible_id  = fields.Many2one('res.users',string="Requisition Responsible", states=READONLY_STATES, default=lambda self: self.env.user.id, index=1, readonly=1)
+    requisition_date = fields.Date(string="Requisition Date",required=True,states=READONLY_STATES, default=fields.Datetime.now)
+    received_date = fields.Date(string="Received Date",readonly=True,states=READONLY_STATES,)
+    requisition_deadline_date = fields.Date(string="Requisition Deadline",required=True,states=READONLY_STATES,)
     state = fields.Selection([
                                 ('new','New'),
                                 ('department_approval','Waiting PM Approval'),
@@ -433,7 +433,7 @@ class MaterialPurchaseRequisition(models.Model):
                                 ('approved','Approved'),
                                 ('reject','Rejected'),
                                 ('cancel','Cancel')],string='Stage',default="new")
-    requisition_line_ids = fields.One2many('requisition.line','requisition_id',string="Requisition Line ID")
+    requisition_line_ids = fields.One2many('requisition.line','requisition_id',string="Requisition Line ID", states=READONLY_STATES,)
     confirmed_by_id = fields.Many2one('res.users',string="Confirmed By")
     approved_by_id = fields.Many2one('res.users',string="Department Approved By")
     approved_by_stock_id = fields.Many2one('res.users',string="Stock Approved By")
@@ -453,46 +453,21 @@ class MaterialPurchaseRequisition(models.Model):
     purchase_order_count = fields.Integer('Purchase Order', compute='_get_purchase_order_count')
     company_id = fields.Many2one(
         'res.company', 'Company',
-        default=lambda self: self.env.user.company_id.id, index=1, readonly=1)
+        default=lambda self: self.env.user.company_id.id, index=1, readonly=1, states=READONLY_STATES,)
     currency_id = fields.Many2one(
         'res.currency', 'Currency',
         default=lambda self: self.env.user.company_id.currency_id.id,
-        required=True)
+        required=True, states=READONLY_STATES,)
     project_id = fields.Many2one('project.project',
         string='Project',
         default=lambda self: self.env.context.get('default_project_id'),
         index=True,
         track_visibility='onchange',
         change_default=True,
-        required=True,)
-    pm_id = fields.Many2one('res.users',string="PM",related='project_id.user_id',readonly=True)
-    account_analytic_id = fields.Many2one('account.analytic.account', string='Analytic Account',related='project_id.analytic_account_id',readonly=True)
-    analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags', required=True,)
-
-    is_suggest_provider = fields.Boolean(string='Want to suggest a provider ?')
-
-    suggest_provider = fields.Many2one('res.partner', string='Vendor', states=READONLY_STATES, help="You can find a suggested vendor.")
-    is_tech_specs = fields.Boolean(string='Is technical specs ok ?', states=READONLY_STATES)
-    is_quality = fields.Boolean(string='Is Qualtity specs ok ?', states=READONLY_STATES)
-    is_price = fields.Boolean(string='Is Price right ?', states=READONLY_STATES)
-    is_qty = fields.Boolean(string='Is Quantity ok ?', states=READONLY_STATES)
-    is_delivery = fields.Boolean(string='Is Delivery time ok ?', states=READONLY_STATES)
-
-
-class ReqLineProvider(models.Model):
-    _name = "requisition.provider"
-    _rec_name = 'suggest_provider'
-
-    @api.model
-    def create(self , vals):
-        vals['name'] = self.env['ir.sequence'].next_by_code('requisition.provider') or '/'
-        return super(ReqLineProvider, self).create(vals)
-
-
-    name = fields.Char(string='Name', readonly=True,copy =False)
-    suggest_provider = fields.Many2one('res.partner', string='Vendor', help="You can find a suggested vendor.")
-    requisition_line_id = fields.Many2one('requisition.line',string="Requisition Line")
-
+        required=True,states=READONLY_STATES,)
+    pm_id = fields.Many2one('res.users',string="PM",related='project_id.user_id',readonly=True,states=READONLY_STATES,)
+    account_analytic_id = fields.Many2one('account.analytic.account', string='Analytic Account',related='project_id.analytic_account_id',readonly=True,states=READONLY_STATES,)
+    analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags', required=True,states=READONLY_STATES,)
 
 
 class RequisitionLine(models.Model):
@@ -531,8 +506,17 @@ class RequisitionLine(models.Model):
     analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags', required=True,)
     qty_available = fields.Float(string="Qty Available",related='product_id.qty_available',readonly=True)
     location_id = fields.Many2one('stock.location', string='Location', )
-    is_suggest_provider = fields.Boolean(string='Want to suggest a provider ?')
-    suggest_provider_id = fields.Many2one('res.partner', string='Vendor',)
+    is_suggest_provider = fields.Boolean(string='Suggest a provider ?')
+    suggest_provider_id = fields.Many2one('res.partner', string='Suggested',)
+    why_prov = fields.Selection([
+                                ('price','Best price'),
+                                ('delivery','Best delivery time'),
+                                ('credit','Terms of credit'),
+                                ('partial','Available partial delivery'),
+                                ('other','Other')],string='Why?',default="price")
+    is_tech_specs = fields.Boolean(string='Tech specs?')
+    tech_specs = fields.Char(string="Specs")
+    other_prov = fields.Char(string="Other")
 
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
