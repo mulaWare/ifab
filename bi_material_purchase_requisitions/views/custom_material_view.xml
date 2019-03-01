@@ -68,7 +68,7 @@
                                     <field name="uom_id" options="{'no_create': True, 'no_create_edit':True, 'no_open':True, 'no_quick_create': True, }" groups="stock.group_stock_manager,purchase.group_purchase_manager"/>
                                     <field name="vendor_id" widget="many2many_tags" options="{'no_create': True, 'no_create_edit':True, 'no_open':True, 'no_quick_create': True,}"/>
                                     <field name="is_suggest_provider" />
-                                    <field name="suggest_provider_id" attrs="{'invisible': [('is_suggest_provider','=',False)]}", domain="[('supplier','=',True)]", />
+                                    <field name="suggest_provider_id" attrs="{'invisible': [('is_suggest_provider','=',False)]}" domain="[('supplier','=',True)]" options="{'no_create': True, 'no_create_edit':True, 'no_open':True, 'no_quick_create': True, }" />
                                     <field name="why_prov" attrs="{'invisible': [('is_suggest_provider','=',False)]}"/>
                                     <field name="other_prov" attrs="{'invisible': [('why_prov','!=','other')]}"/>
                                     <field name="is_tech_specs" />
