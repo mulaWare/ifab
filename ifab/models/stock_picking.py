@@ -35,7 +35,10 @@ class Picking(models.Model):
     @api.onchange('state')
     def _is_verification(self):
 
-        if self.state not in READONLY_STATES:
+        if self.state not in {
+            'done': [('readonly', True)],
+            'cancel': [('readonly', True)],
+            }:
             is_verification = self.env.user.id
         else:
             is_verification = self.is_verification.id
