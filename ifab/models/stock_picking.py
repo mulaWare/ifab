@@ -24,7 +24,7 @@ class Picking(models.Model):
     @api.onchange('partner_id','company_id')
     def _is_internal_picking(self):
 
-        if self.partner_id.id == self.company_id.partner_id.id:
+        if (self.partner_id.id == self.company_id.partner_id.id):
             is_internal = True
         else:
             is_internal = False
