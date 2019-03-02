@@ -21,7 +21,6 @@ class Picking(models.Model):
     _inherit = "stock.picking"
 
     @api.multi
-    @api.onchange('partner_id','company_id')
     def _is_internal_picking(self):
 
         if (self.partner_id.id == self.company_id.partner_id.id):
@@ -32,7 +31,6 @@ class Picking(models.Model):
         return is_internal
 
     @api.multi
-    @api.onchange('state')
     def _is_verification(self):
 
         if self.state not in {
@@ -40,17 +38,14 @@ class Picking(models.Model):
             'cancel': [('readonly', True)],
             }:
             is_verification = self.env.user.id
-        else:
-            is_verification = self.is_verification.id
-
-        return is_verification
+            return is_verification
 
 
     READONLY_STATES = {
         'done': [('readonly', True)],
         'cancel': [('readonly', True)],
     }
-    is_internal_picking = fields.Boolean(string='Is technical specs ok ?', states=READONLY_STATES, default=_is_internal_picking, compute='_is_internal_picking')
+    is_internal_picking = fields.Boolean(string='Is internal picking ?', states=READONLY_STATES, default=_is_internal_picking, compute='_is_internal_picking')
     is_tech_specs = fields.Boolean(string='Is technical specs ok ?', states=READONLY_STATES)
     is_quality = fields.Boolean(string='Is Qualtity specs ok ?', states=READONLY_STATES)
     is_price = fields.Boolean(string='Is Price right ?', states=READONLY_STATES)
@@ -58,5 +53,5 @@ class Picking(models.Model):
     is_delivery = fields.Boolean(string='Is Delivery time ok ?', states=READONLY_STATES)
     is_ok = fields.Selection(string='Is authorized ?', states=READONLY_STATES,
         selection=[('ok', 'Ok'), ('no', 'No')],)
-    is_verification = fields.Many2one('res.users',string="Verification Responsible", default=_is_verification, index=1, states=READONLY_STATES, compute='_is_verification',)
+    is_verification = fields.Many2one('res.users',string="Verification Responsible", index=1, states=READONLY_STATES, compute='_is_verification',)
     is_date = fields.Date(string="Verification Date",required=True, default=fields.Datetime.now, states=READONLY_STATES)
