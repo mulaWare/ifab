@@ -20,7 +20,8 @@ class Picking(models.Model):
     _name = "stock.picking"
     _inherit = "stock.picking"
 
-    @api.multi
+
+    @api.depend('partner_id','company_id.partner_id')
     def _is_internal_picking(self):
         if self.partner_id.id == self.company_id.partner_id.id:
             is_internal = True
@@ -29,15 +30,14 @@ class Picking(models.Model):
 
         return is_internal
 
-    @api.multi
-    @api.onchange('state')
+    @api.depend('state')
     def _is_verification(self):
         if self.state == 'done':
             res = self.write({
                             'is_verification':self.env.user.id,
                             'is_date' : datetime.now(),
                             })
-        return
+            return
 
 
     READONLY_STATES = {
