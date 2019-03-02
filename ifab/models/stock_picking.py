@@ -37,13 +37,14 @@ class Picking(models.Model):
                             'is_verification':self.env.user.id,
                             'is_date' : datetime.now(),
                             })
+        return
 
 
     READONLY_STATES = {
         'done': [('readonly', True)],
         'cancel': [('readonly', True)],
     }
-    is_internal_picking = fields.Boolean(string='Is internal picking ?', default=_is_internal_picking, states=READONLY_STATES,  )
+    is_internal_picking = fields.Boolean(string='Is internal picking ?', default=_is_internal_picking, )
     is_tech_specs = fields.Boolean(string='Is technical specs ok ?', states=READONLY_STATES)
     is_quality = fields.Boolean(string='Is Qualtity specs ok ?', states=READONLY_STATES)
     is_price = fields.Boolean(string='Is Price right ?', states=READONLY_STATES)
@@ -52,4 +53,4 @@ class Picking(models.Model):
     is_ok = fields.Selection(string='Is authorized ?', states=READONLY_STATES,
         selection=[('ok', 'Ok'), ('no', 'No')],)
     is_verification = fields.Many2one('res.users',string="Verification Responsible", )
-    is_date = fields.Date(string="Verification Date",required=True, default=fields.Datetime.now, )
+    is_date = fields.Date(string="Verification Date", )
