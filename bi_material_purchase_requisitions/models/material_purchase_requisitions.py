@@ -180,7 +180,7 @@ class MaterialPurchaseRequisition(models.Model):
                             'state':'approved',
                             'approved_by_purchase_id':self.env.user.id,
                             'approved_by_id':self.env.user.id,
-                            'department_approval_date' : datetime.now(),
+                            'purchase_approval_date' : datetime.now(),
                             'approved_date' : datetime.now(),
                             })
         template_id = self.env['ir.model.data'].get_object_reference(
