@@ -28,7 +28,11 @@ class Picking(models.Model):
         else:
             is_internal = False
 
-        raise UserError(_(' %d %d %d') % self.partner_id.id, % self.company_id.partner_id.id, % is_internal,)
+        raise UserError(_(' %s ') % is_internal)
+        raise UserError(_(' %s ') % self.partner_id.id)
+        raise UserError(_(' %s ') % self.company_id.partner_id.id)
+
+
         return is_internal
 
     @api.depends('state')
