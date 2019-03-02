@@ -22,7 +22,6 @@ class Picking(models.Model):
 
     @api.multi
     def _is_internal_picking(self):
-
         if self.partner_id.id == self.company_id.partner_id.id:
             is_internal = True
         else:
@@ -33,7 +32,7 @@ class Picking(models.Model):
     @api.multi
     @api.onchange('state')
     def _is_verification(self):
-        if self.state == 'done'
+        if self.state == 'done':
             res = self.write({
                             'is_verification':self.env.user.id,
                             'is_date' : datetime.now(),
