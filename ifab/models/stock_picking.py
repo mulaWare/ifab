@@ -41,9 +41,9 @@ class Picking(models.Model):
 
 
     READONLY_STATES = {
-        'done': [('readonly', True)],
-        'cancel': [('readonly', True)],
-    }
+                        'done': [('readonly', True)],
+                        'cancel': [('readonly', True)],
+                      }
     is_internal_picking = fields.Boolean(string='Is internal picking ?', default=_is_internal_picking, )
     is_tech_specs = fields.Boolean(string='Is technical specs ok ?', states=READONLY_STATES)
     is_quality = fields.Boolean(string='Is Qualtity specs ok ?', states=READONLY_STATES)
