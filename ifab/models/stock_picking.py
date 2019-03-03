@@ -20,23 +20,19 @@ class Picking(models.Model):
     _name = "stock.picking"
     _inherit = "stock.picking"
 
-    @api.depends('partner_id','company_id')
+    @api.one
     def _is_internal_picking(self):
+        # TDE FIXME: better implementation
+        is_int = self.partner_id.name == self.company_id.partner_id.name
+        self.is_internal_picking = bool(is_int)
 
-
-        if self.partner_id.name == self.company_id.partner_id.name :
-            is_internal = True
-        else:
-            is_internal = False
-
-        return is_internal
 
     @api.onchange('is_ok')
     def _is_verification(self):
         if self.is_ok:
             res = self.write({
                             'is_verification':self.env.user.id,
-                            'is_date' : datetime.now(),
+                            'is_date' : date.now(),
                             })
             return
 
@@ -45,7 +41,7 @@ class Picking(models.Model):
                         'done': [('readonly', True)],
                         'cancel': [('readonly', True)],
                       }
-    is_internal_picking = fields.Boolean(string='Is internal picking ?', default=_is_internal_picking)
+    is_internal_picking = fields.Boolean(string='Is internal picking ?', compute=_is_internal_picking)
     is_tech_specs = fields.Boolean(string='Is technical specs ok ?', states=READONLY_STATES)
     is_quality = fields.Boolean(string='Is Qualtity specs ok ?', states=READONLY_STATES)
     is_price = fields.Boolean(string='Is Price right ?', states=READONLY_STATES)
