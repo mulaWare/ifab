@@ -31,9 +31,9 @@ class Picking(models.Model):
 
         return is_internal
 
-    @api.depends('state')
+    @api.onchange('is_ok')
     def _is_verification(self):
-        if self.state == 'done':
+        if self.is_ok:
             res = self.write({
                             'is_verification':self.env.user.id,
                             'is_date' : datetime.now(),
@@ -45,7 +45,7 @@ class Picking(models.Model):
                         'done': [('readonly', True)],
                         'cancel': [('readonly', True)],
                       }
-    is_internal_picking = fields.Boolean(string='Is internal picking ?', compute='_is_internal_picking',)
+    is_internal_picking = fields.Boolean(string='Is internal picking ?', default=_is_internal_picking)
     is_tech_specs = fields.Boolean(string='Is technical specs ok ?', states=READONLY_STATES)
     is_quality = fields.Boolean(string='Is Qualtity specs ok ?', states=READONLY_STATES)
     is_price = fields.Boolean(string='Is Price right ?', states=READONLY_STATES)
