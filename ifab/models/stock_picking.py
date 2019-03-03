@@ -4,7 +4,7 @@
 from collections import namedtuple
 import json
 import time
-from datetime import date
+from datetime import date, datetime
 
 from itertools import groupby
 from odoo import api, fields, models, _
@@ -23,7 +23,7 @@ class Picking(models.Model):
     @api.one
     def _is_internal_picking(self):
         # TDE FIXME: better implementation
-        is_int = self.partner_id.name == self.company_id.partner_id.name
+        is_int = (self.partner_id.name == self.company_id.partner_id.name)
         self.is_internal_picking = bool(is_int)
 
 
@@ -32,7 +32,7 @@ class Picking(models.Model):
         if self.is_ok:
             res = self.write({
                             'is_verification':self.env.user.id,
-                            'is_date' : date.now(),
+                            'is_date' : datetime.now(),
                             })
             return
 
@@ -41,7 +41,7 @@ class Picking(models.Model):
                         'done': [('readonly', True)],
                         'cancel': [('readonly', True)],
                       }
-    is_internal_picking = fields.Boolean(string='Is internal picking ?', compute=_is_internal_picking)
+    is_internal_picking = fields.Boolean(string='Is internal picking ?', compute='_is_internal_picking')
     is_tech_specs = fields.Boolean(string='Is technical specs ok ?', states=READONLY_STATES)
     is_quality = fields.Boolean(string='Is Qualtity specs ok ?', states=READONLY_STATES)
     is_price = fields.Boolean(string='Is Price right ?', states=READONLY_STATES)
