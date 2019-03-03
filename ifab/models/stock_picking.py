@@ -28,11 +28,6 @@ class Picking(models.Model):
         else:
             is_internal = False
 
-        raise UserError(_(' %s ') % is_internal)
-        raise UserError(_(' %s ') % self.partner_id.id)
-        raise UserError(_(' %s ') % self.company_id.partner_id.id)
-
-
         return is_internal
 
     @api.depends('state')
@@ -49,7 +44,7 @@ class Picking(models.Model):
                         'done': [('readonly', True)],
                         'cancel': [('readonly', True)],
                       }
-    is_internal_picking = fields.Boolean(string='Is internal picking ?', compute='_is_internal_picking',store= True)
+    is_internal_picking = fields.Boolean(string='Is internal picking ?', compute='_is_internal_picking',store=True,)
     is_tech_specs = fields.Boolean(string='Is technical specs ok ?', states=READONLY_STATES)
     is_quality = fields.Boolean(string='Is Qualtity specs ok ?', states=READONLY_STATES)
     is_price = fields.Boolean(string='Is Price right ?', states=READONLY_STATES)
