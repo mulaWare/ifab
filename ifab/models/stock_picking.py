@@ -23,8 +23,8 @@ class Picking(models.Model):
     @api.one
     @api.depends('partner_id','company_id')
     def _is_internal_picking(self):
-        UserError (_('%s '), self.company_id.partner_id.id )
-        if self.partner_id.id == self.company_id.partner_id.id:
+
+        if self.partner_id == self.company_id.partner_id:
             is_internal = True
         else:
             is_internal = False
@@ -54,4 +54,5 @@ class Picking(models.Model):
     is_ok = fields.Selection(string='Is authorized ?', states=READONLY_STATES,
         selection=[('ok', 'Ok'), ('no', 'No')],)
     is_verification = fields.Many2one('res.users',string="Verification Responsible", )
+    company_partner_id = fields.Many2one('res.partner',string="Company Partner",required=True, related='company_id.partner_id', readonly=1)
     is_date = fields.Date(string="Verification Date", )
