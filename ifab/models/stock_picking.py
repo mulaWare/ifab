@@ -21,8 +21,9 @@ class Picking(models.Model):
     _inherit = "stock.picking"
 
     @api.one
-    @api.depends('partner_id','company_id.partner_id')
+    @api.depends('partner_id','company_id')
     def _is_internal_picking(self):
+        UserError (_('%s '), self.company_id.partner_id.id )
         if self.partner_id.id == self.company_id.partner_id.id:
             is_internal = True
         else:
