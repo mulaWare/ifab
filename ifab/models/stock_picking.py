@@ -20,7 +20,7 @@ class Picking(models.Model):
     _name = "stock.picking"
     _inherit = "stock.picking"
 
-
+    @api.one
     @api.depends('partner_id','company_id.partner_id')
     def _is_internal_picking(self):
         if self.partner_id.id == self.company_id.partner_id.id:
