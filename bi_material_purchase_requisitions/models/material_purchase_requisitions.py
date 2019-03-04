@@ -12,6 +12,7 @@ class MaterialPurchaseRequisition(models.Model):
     _name = "material.purchase.requisition"
     _rec_name = 'sequence'
     _inherit = ['mail.thread', 'mail.activity.mixin', 'portal.mixin']
+    _order = "sequence desc, id desc"
 
     @api.model
     def create(self , vals):
@@ -179,7 +180,7 @@ class MaterialPurchaseRequisition(models.Model):
                             'state':'approved',
                             'approved_by_purchase_id':self.env.user.id,
                             'approved_by_id':self.env.user.id,
-                            'department_approval_date' : datetime.now(),
+                            'purchase_approval_date' : datetime.now(),
                             'approved_date' : datetime.now(),
                             })
         template_id = self.env['ir.model.data'].get_object_reference(
@@ -212,10 +213,28 @@ class MaterialPurchaseRequisition(models.Model):
     @api.multi
     def action_reject(self):
         res = self.write({
-                            'state':'cancel',
+                            'state':'reject',
                             'rejected_date' : datetime.now(),
                             'rejected_by' : self.env.user.id,
                         })
+        template_id = self.env['ir.model.data'].get_object_reference(
+                                                          'bi_material_purchase_requisitions',
+                                                          'email_user_reject_purchase_requisition')[1]
+        email_template_obj = self.env['mail.template'].sudo().browse(template_id)
+        if template_id:
+                values = email_template_obj.generate_email(self.id, fields=None)
+                values['email_from'] = self.env.user.partner_id.email
+                values['email_to'] = self.employee_id.work_email
+                values['email_cc'] = self.requisition_responsible_id.email
+                values['res_id'] = False
+                mail_mail_obj = self.env['mail.mail']
+                #request.env.uid = 1
+                msg_id = mail_mail_obj.sudo().create(values)
+                if msg_id:
+                    mail_mail_obj.send([msg_id])
+                    self.message_post_with_template(template_id)
+                    self.message_post(body="Rechazado por Compras")
+
         return res
 
     @api.multi
@@ -384,6 +403,17 @@ class MaterialPurchaseRequisition(models.Model):
         self.destination_location_id = self.employee_id.destination_location_id
 
     @api.multi
+    @api.onchange('requisition_deadline_date')
+    def onchange_deadline(self):
+        res = {}
+        if not self.requisition_deadline_date:
+            return res
+        else:
+            if self.requisition_deadline_date < fields.Datetime.now():
+                res = self.requisition_deadline_date = False
+                return res
+
+    @api.multi
     @api.onchange('project_id')
     def onchange_project_id(self):
         res = {}
@@ -412,18 +442,18 @@ class MaterialPurchaseRequisition(models.Model):
     }
 
     sequence = fields.Char(string='Sequence', readonly=True,copy =False)
-    employee_id = fields.Many2one('hr.employee',string="Employee",required=True)
-    department_id = fields.Many2one('hr.department',string="Department",required=True, related='employee_id.department_id', readonly=1)
-    stock_dept_id = fields.Many2one('hr.department',string="Stock",required=True, default=lambda self: self.env['hr.department'].search([('name', '=', 'Almacén')], limit=1).id,readonly=1)
-    purchase_dept_id = fields.Many2one('hr.department',string="Purchase",required=True, default=lambda self: self.env['hr.department'].search([('name', '=', 'Compras')], limit=1).id,readonly=1)
-    department_manager_id = fields.Many2one('res.users',string="Department Manager", related='employee_id.department_id.manager_id.user_id',readonly=1)
-    stock_manager_id = fields.Many2one('res.users',string="Stock Manager", related='stock_dept_id.manager_id.user_id',readonly=1)
-    purchase_manager_id = fields.Many2one('res.users',string="Purchase Manager", related='purchase_dept_id.manager_id.user_id',readonly=1)
+    employee_id = fields.Many2one('hr.employee',string="Employee",required=True, states=READONLY_STATES,)
+    department_id = fields.Many2one('hr.department',string="Department",required=True, states=READONLY_STATES, related='employee_id.department_id', readonly=1)
+    stock_dept_id = fields.Many2one('hr.department',string="Stock",required=True,states=READONLY_STATES, default=lambda self: self.env['hr.department'].search([('name', '=', 'Almacén')], limit=1).id,readonly=1)
+    purchase_dept_id = fields.Many2one('hr.department',string="Purchase",required=True, states=READONLY_STATES, default=lambda self: self.env['hr.department'].search([('name', '=', 'Compras')], limit=1).id,readonly=1)
+    department_manager_id = fields.Many2one('res.users',string="Department Manager", states=READONLY_STATES, related='employee_id.department_id.manager_id.user_id',readonly=1)
+    stock_manager_id = fields.Many2one('res.users',string="Stock Manager", states=READONLY_STATES, related='stock_dept_id.manager_id.user_id',readonly=1)
+    purchase_manager_id = fields.Many2one('res.users',string="Purchase Manager", states=READONLY_STATES, related='purchase_dept_id.manager_id.user_id',readonly=1)
 
-    requisition_responsible_id  = fields.Many2one('res.users',string="Requisition Responsible", default=lambda self: self.env.user.id, index=1, readonly=1)
-    requisition_date = fields.Date(string="Requisition Date",required=True, default=fields.Datetime.now)
-    received_date = fields.Date(string="Received Date",readonly=True)
-    requisition_deadline_date = fields.Date(string="Requisition Deadline",required=True, default=fields.Datetime.now)
+    requisition_responsible_id  = fields.Many2one('res.users',string="Requisition Responsible", states=READONLY_STATES, default=lambda self: self.env.user.id, index=1, readonly=1)
+    requisition_date = fields.Date(string="Requisition Date",required=True,states=READONLY_STATES, default=fields.Datetime.now)
+    received_date = fields.Date(string="Received Date",readonly=True,states=READONLY_STATES,)
+    requisition_deadline_date = fields.Date(string="Requisition Deadline",required=True,states=READONLY_STATES,)
     state = fields.Selection([
                                 ('new','New'),
                                 ('department_approval','Waiting PM Approval'),
@@ -432,7 +462,7 @@ class MaterialPurchaseRequisition(models.Model):
                                 ('approved','Approved'),
                                 ('reject','Rejected'),
                                 ('cancel','Cancel')],string='Stage',default="new")
-    requisition_line_ids = fields.One2many('requisition.line','requisition_id',string="Requisition Line ID")
+    requisition_line_ids = fields.One2many('requisition.line','requisition_id',string="Requisition Line ID", states=READONLY_STATES,)
     confirmed_by_id = fields.Many2one('res.users',string="Confirmed By")
     approved_by_id = fields.Many2one('res.users',string="Department Approved By")
     approved_by_stock_id = fields.Many2one('res.users',string="Stock Approved By")
@@ -444,7 +474,7 @@ class MaterialPurchaseRequisition(models.Model):
     purchase_approval_date = fields.Date(string="Purchase Approval Date",readonly=True)
     approved_date = fields.Date(string="Approved Date",readonly=True)
     rejected_date = fields.Date(string="Rejected Date",readonly=True)
-    reason_for_requisition = fields.Text(string="Reason For Requisition")
+    reason_for_requisition = fields.Text(string="Reason For Requisition", states=READONLY_STATES, )
     source_location_id = fields.Many2one('stock.location',string="Source Location")
     destination_location_id = fields.Many2one('stock.location',string="Destination Location",compute="_get_emp_destination")
     internal_picking_id = fields.Many2one('stock.picking',string="Internal Picking")
@@ -452,29 +482,21 @@ class MaterialPurchaseRequisition(models.Model):
     purchase_order_count = fields.Integer('Purchase Order', compute='_get_purchase_order_count')
     company_id = fields.Many2one(
         'res.company', 'Company',
-        default=lambda self: self.env.user.company_id.id, index=1, readonly=1)
+        default=lambda self: self.env.user.company_id.id, index=1, readonly=1, states=READONLY_STATES,)
     currency_id = fields.Many2one(
         'res.currency', 'Currency',
         default=lambda self: self.env.user.company_id.currency_id.id,
-        required=True)
+        required=True, states=READONLY_STATES,)
     project_id = fields.Many2one('project.project',
         string='Project',
         default=lambda self: self.env.context.get('default_project_id'),
         index=True,
         track_visibility='onchange',
         change_default=True,
-        required=True,)
-    pm_id = fields.Many2one('res.users',string="PM",related='project_id.user_id',readonly=True)
-    account_analytic_id = fields.Many2one('account.analytic.account', string='Analytic Account',related='project_id.analytic_account_id',readonly=True)
-    analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags', required=True,)
-
-    is_suggest_provider = fields.Boolean(string='Want to suggest a provider ?')
-    suggest_provider = fields.Many2one('res.partner', string='Vendor', states=READONLY_STATES, help="You can find a suggested vendor.")
-    is_tech_specs = fields.Boolean(string='Is technical specs ok ?', states=READONLY_STATES)
-    is_quality = fields.Boolean(string='Is Qualtity specs ok ?', states=READONLY_STATES)
-    is_price = fields.Boolean(string='Is Price right ?', states=READONLY_STATES)
-    is_qty = fields.Boolean(string='Is Quantity ok ?', states=READONLY_STATES)
-    is_delivery = fields.Boolean(string='Is Delivery time ok ?', states=READONLY_STATES)
+        required=True,states=READONLY_STATES,)
+    pm_id = fields.Many2one('res.users',string="PM",related='project_id.user_id',readonly=True,states=READONLY_STATES,)
+    account_analytic_id = fields.Many2one('account.analytic.account', string='Analytic Account',related='project_id.analytic_account_id',readonly=True,states=READONLY_STATES,)
+    analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags', required=True,states=READONLY_STATES,)
 
 
 class RequisitionLine(models.Model):
@@ -495,7 +517,7 @@ class RequisitionLine(models.Model):
 
         for record in self:
             if record.requisition_action == 'internal_picking':
-                partner = self.env.user.partner_id.id
+                partner = self.requisition_id.company_id.partner_id.id
                 vendor = self.env['res.partner'].browse(partner)
                 record.vendor_id = vendor
             if record.requisition_action == 'purchase_order':
@@ -513,7 +535,17 @@ class RequisitionLine(models.Model):
     analytic_tag_ids = fields.Many2many('account.analytic.tag', string='Analytic Tags', required=True,)
     qty_available = fields.Float(string="Qty Available",related='product_id.qty_available',readonly=True)
     location_id = fields.Many2one('stock.location', string='Location', )
-
+    is_suggest_provider = fields.Boolean(string='Suggest a provider ?')
+    suggest_provider_id = fields.Many2one('res.partner', string='Suggested',)
+    why_prov = fields.Selection([
+                                ('price','Best price'),
+                                ('delivery','Best delivery time'),
+                                ('credit','Terms of credit'),
+                                ('partial','Available partial delivery'),
+                                ('other','Other')],string='Why?',default="price")
+    is_tech_specs = fields.Boolean(string='Tech specs?')
+    tech_specs = fields.Char(string="Specs")
+    other_prov = fields.Char(string="Other")
 
 class StockPicking(models.Model):
     _inherit = 'stock.picking'

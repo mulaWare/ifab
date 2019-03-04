@@ -12,9 +12,9 @@
                     <button name="department_approve" type="object" string="Department Approve" class="btn-primary" attrs="{'invisible': [('state', 'in', ['new','stock_approval','purchase_approval','approved','reject','cancel'])]}" groups="bi_material_purchase_requisitions.group_requisition_department_manager"/>
                     <button name="stock_approve" type="object" string="Stock Approve" class="btn-primary" attrs="{'invisible': [('state', 'in', ['new','department_approval','purchase_approval','approved','reject','cancel'])]}" groups="stock.group_stock_manager"/>
                     <button name="purchase_approve" type="object" string="Purchase Approve" class="btn-primary" attrs="{'invisible': [('state', 'in', ['new','stock_approval','department_approval','approved','reject','cancel'])]}" groups="purchase.group_purchase_manager"/>
-                    <button name="action_reject" type="object" string="Reject" attrs="{'invisible': [('state', 'in', ['new','approved','cancel'])]}" groups="bi_material_purchase_requisitions.group_requisition_department_manager,stock.group_stock_manager,purchase.group_purchase_manager"/>
-                    <button name="action_cancel" type="object" string="Cancel" attrs="{'invisible': [('state', 'in', ['department_approval','stock_approval','purchase_approval','cancel'])]}" groups="base.group_user"/>
-                    <button name="action_reset_draft" type="object" string="Reset To Draft" attrs="{'invisible': [('state', 'in', ['new','department_approval','stock_approval','purchase_approval','approved',])]}"/>
+                    <button name="action_reject" type="object" string="Reject" attrs="{'invisible': [('state', 'in', ['new','approved','cancel','reject',])]}" groups="bi_material_purchase_requisitions.group_requisition_department_manager,stock.group_stock_manager,purchase.group_purchase_manager"/>
+                    <button name="action_cancel" type="object" string="Cancel" attrs="{'invisible': [('state', 'in', ['department_approval','stock_approval','purchase_approval','cancel', 'reject',])]}" groups="base.group_user"/>
+                    <button name="action_reset_draft" type="object" string="Reset To Draft" attrs="{'invisible': [('state', 'in', ['new','department_approval','stock_approval','purchase_approval','approved','cancel',])]}"/>
                     <field name="state" widget="statusbar" />
                 </header>
                 <sheet>
@@ -58,15 +58,21 @@
                             <field name="requisition_line_ids" widget="one2many_list">
                                 <tree string="Requisitions Lines" editable="bottom">
                                     <field name="requisition_action" groups="stock.group_stock_manager"/>
-                                    <field name="product_id" options="{'no_create': True, 'no_create_edit':True, 'no_open':True, 'no_quick_create': True,}"/>
+                                    <field name="product_id" options="{'no_create': True, 'no_create_edit':True, 'no_open':True, 'no_quick_create': True,}" domain="[('purchase_ok','=',True)]"/>
                                     <field name="account_analytic_id" options="{'no_create': True, 'no_create_edit':True, 'no_open':True, 'no_quick_create': True,}"/>
                                     <field name="analytic_tag_ids" widget="many2many_tags" options="{'color_field': 'color','no_create': True, 'no_create_edit':True, 'no_open':True, 'no_quick_create': True,}"/>
                                     <field name="description" />
                                     <field name="qty" />
-                                    <field name="qty_available" />
+                                    <field name="qty_available" groups="stock.group_stock_manager"/>
                                     <field name="location_id" options="{'no_create': True, 'no_create_edit':True, 'no_open':True, 'no_quick_create': True, }" groups="stock.group_stock_manager"/>
                                     <field name="uom_id" options="{'no_create': True, 'no_create_edit':True, 'no_open':True, 'no_quick_create': True, }" groups="stock.group_stock_manager,purchase.group_purchase_manager"/>
                                     <field name="vendor_id" widget="many2many_tags" options="{'no_create': True, 'no_create_edit':True, 'no_open':True, 'no_quick_create': True,}"/>
+                                    <field name="is_suggest_provider" />
+                                    <field name="suggest_provider_id" attrs="{'invisible': [('is_suggest_provider','=',False)]}" domain="[('supplier','=',True)]" options="{'no_create': True, 'no_create_edit':True, 'no_open':True, 'no_quick_create': True, }" />
+                                    <field name="why_prov" attrs="{'invisible': [('is_suggest_provider','=',False)]}"/>
+                                    <field name="other_prov" attrs="{'invisible': [('why_prov','!=','other')]}"/>
+                                    <field name="is_tech_specs" />
+                                    <field name="tech_specs" attrs="{'invisible': [('is_tech_specs','=',False)]}"/>
                                 </tree>
                             </field>
                         </page>
@@ -102,18 +108,7 @@
                         </page>
                     </notebook>
                     <group name="comments" string="Comments">
-                      <group name="comm_left">
-                          <field name="is_suggest_provider"/>
-                          <field name="suggest_provider" attrs="{'invisible': [('is_suggest_provider', '=',False)]}"/>
-                          <field name="is_tech_specs" attrs="{'invisible': ['|',('is_suggest_provider', '=',False),('suggest_provider', '=',False)]}"/>
-                          <field name="is_quality" attrs="{'invisible': ['|',('is_suggest_provider', '=',False),('suggest_provider', '=',False)]}"/>
-                          <field name="is_price" attrs="{'invisible': ['|',('is_suggest_provider', '=',False),('suggest_provider', '=',False)]}"/>
-                          <field name="is_qty" attrs="{'invisible': ['|',('is_suggest_provider', '=',False),('suggest_provider', '=',False)]}"/>
-                          <field name="is_delivery" attrs="{'invisible': ['|',('is_suggest_provider', '=',False),('suggest_provider', '=',False)]}"/>
-                      </group>
-                      <group name="comm_right">
                           <field name="reason_for_requisition"/>
-                      </group>
                     </group>
                 </sheet>
                 <div class="oe_chatter">

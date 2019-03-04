@@ -20,11 +20,26 @@ class Picking(models.Model):
     _name = "stock.picking"
     _inherit = "stock.picking"
 
-    READONLY_STATES = {
-        'done': [('readonly', True)],
-        'cancel': [('readonly', True)],
-    }
+    @api.one
+    def _is_internal_picking(self):
+        # TDE FIXME: better implementation
+        is_int = (self.partner_id.name == self.company_id.partner_id.name)
+        self.is_internal_picking = bool(is_int)
 
+
+    @api.onchange('is_ok')
+    def _is_verification(self):
+        if self.is_ok:
+            self.is_verification = self.env.user.id
+            self.is_date = fields.Datetime.now()
+            return
+
+
+    READONLY_STATES = {
+                        'done': [('readonly', True)],
+                        'cancel': [('readonly', True)],
+                      }
+    is_internal_picking = fields.Boolean(string='Is internal picking ?', compute='_is_internal_picking')
     is_tech_specs = fields.Boolean(string='Is technical specs ok ?', states=READONLY_STATES)
     is_quality = fields.Boolean(string='Is Qualtity specs ok ?', states=READONLY_STATES)
     is_price = fields.Boolean(string='Is Price right ?', states=READONLY_STATES)
@@ -32,5 +47,5 @@ class Picking(models.Model):
     is_delivery = fields.Boolean(string='Is Delivery time ok ?', states=READONLY_STATES)
     is_ok = fields.Selection(string='Is authorized ?', states=READONLY_STATES,
         selection=[('ok', 'Ok'), ('no', 'No')],)
-    is_verification = fields.Many2one('res.users',string="Verification Responsible", default=lambda self: self.env.user.id, index=1, states=READONLY_STATES)
-    is_date = fields.Date(string="Verification Date",required=True, default=fields.Datetime.now, states=READONLY_STATES)
+    is_verification = fields.Many2one('res.users',string="Verification Responsible",store=True, states=READONLY_STATES,)
+    is_date = fields.Date(string="Verification Date",store=True, states=READONLY_STATES,)

@@ -50,7 +50,7 @@
                         ]]>
             </field>
         </record>
-        
+
 
         <record id="email_user_purchase_requisition" model="mail.template">
             <field name="name">Requisición de Compra APROBADA</field>
@@ -61,6 +61,22 @@
                     <div style="font-family: 'Lucica Grande', Ubuntu, Arial, Verdana, sans-serif; font-size: 12px; color: rgb(34, 34, 34); background-color: #FFF; ">
                         <p>Estimado ${object.employee_id.name or 'n/a' } / ${object.requisition_responsible_id.name or 'n/a' }</p>
                         <p> Requisición de Compra APROBADA -  ${object.sequence}. </p>
+                        <p> Gracias </p>
+                    </div>
+                        ]]>
+            </field>
+        </record>
+
+        <record id="email_user_reject_purchase_requisition" model="mail.template">
+            <field name="name">Requisición de Compra RECHAZADA</field>
+            <field name="subject">Requisición de Compra RECHAZADA ${object.sequence or 'n/a' }</field>
+            <field name="model_id" ref="bi_material_purchase_requisitions.model_material_purchase_requisition" />
+            <field name="auto_delete" eval="True" />
+            <field name="body_html"><![CDATA[
+                    <div style="font-family: 'Lucica Grande', Ubuntu, Arial, Verdana, sans-serif; font-size: 12px; color: rgb(34, 34, 34); background-color: #FFF; ">
+                        <p>Estimado ${object.employee_id.name or 'n/a' } / ${object.requisition_responsible_id.name or 'n/a' }</p>
+                        <p> Requisición de Compra RECHAZADA -  ${object.sequence}. </p>
+                        <p> Favor de revisar ésta y corregir la misma. </p>
                         <p> Gracias </p>
                     </div>
                         ]]>

@@ -123,6 +123,14 @@ class PurchaseOrder(models.Model):
             line["analytic_tag_ids"]= [(2, x) for x in line.analytic_tag_ids.ids]
             line["analytic_tag_ids"]= [(4, x) for x in self.analytic_tag_ids.ids]
 
+    @api.onchange('is_ok')
+    def _is_verification(self):
+        if self.is_ok:
+            self.is_verification = self.env.user.id
+            self.is_date = fields.Datetime.now()
+            return
+
+
     project_id = fields.Many2one('project.project',
         string='Project',
         default=lambda self: self.env.context.get('default_project_id'),
@@ -140,8 +148,8 @@ class PurchaseOrder(models.Model):
     is_delivery = fields.Boolean(string='Is Delivery time ok ?', states=READONLY_STATES)
     is_ok = fields.Selection(string='Is authorized ?', states=READONLY_STATES,
         selection=[('ok', 'Ok'), ('no', 'No')],)
-    is_verification = fields.Many2one('res.users',string="Verification Responsible", default=lambda self: self.env.user.id, index=1, states=READONLY_STATES)
-    is_date = fields.Date(string="Verification Date",required=True, default=fields.Datetime.now, states=READONLY_STATES)
+    is_verification = fields.Many2one('res.users',string="Verification Responsible",store=True, states=READONLY_STATES,)
+    is_date = fields.Date(string="Verification Date",store=True, states=READONLY_STATES,)
 
 class PurchaseOrderLine(models.Model):
     _name = 'purchase.order.line'
