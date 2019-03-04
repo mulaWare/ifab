@@ -34,7 +34,7 @@ class Picking(models.Model):
                              'is_verification':self.env.user.id,
                              'is_date' : fields.Datetime.now(),
                             })
-            return res
+            return
 
 
     READONLY_STATES = {
