@@ -47,5 +47,5 @@ class Picking(models.Model):
     is_delivery = fields.Boolean(string='Is Delivery time ok ?', states=READONLY_STATES)
     is_ok = fields.Selection(string='Is authorized ?', states=READONLY_STATES,
         selection=[('ok', 'Ok'), ('no', 'No')],)
-    is_verification = fields.Many2one('res.users',string="Verification Responsible",store=True, )
-    is_date = fields.Date(string="Verification Date",store=True,)
+    is_verification = fields.Many2one('res.users',string="Verification Responsible",store=True, states=READONLY_STATES,)
+    is_date = fields.Date(string="Verification Date",store=True, states=READONLY_STATES,)
