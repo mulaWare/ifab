@@ -4,7 +4,7 @@
 from collections import namedtuple
 import json
 import time
-from datetime import date, datetime
+from datetime import date
 
 from itertools import groupby
 from odoo import api, fields, models, _
@@ -30,10 +30,8 @@ class Picking(models.Model):
     @api.onchange('is_ok')
     def _is_verification(self):
         if self.is_ok:
-            res = self.write({
-                            'is_verification':self.env.user.id,
-                            'is_date' : datetime.now(),
-                            })
+            self.is_verification = self.env.user.id,
+            self.is_date' = date.datetime.now(),
             return
 
 
@@ -50,5 +48,4 @@ class Picking(models.Model):
     is_ok = fields.Selection(string='Is authorized ?', states=READONLY_STATES,
         selection=[('ok', 'Ok'), ('no', 'No')],)
     is_verification = fields.Many2one('res.users',string="Verification Responsible", )
-    company_partner_id = fields.Many2one('res.partner',string="Company Partner",required=True, related='company_id.partner_id', readonly=1)
     is_date = fields.Date(string="Verification Date", )

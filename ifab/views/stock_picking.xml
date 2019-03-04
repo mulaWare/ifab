@@ -23,10 +23,9 @@
                                     class="oe_link"/>
                             </div>
                         </group>
-                        <group name="evaluation" string="Evaluación Recepción de Insumos" attrs="{'invisible': [('is_internal_picking','=',0)]}">
+                        <group name="evaluation" string="Evaluación Recepción de Insumos" attrs="{'invisible': [('is_internal_picking','=',True)]}">
                             <field name="is_internal_picking" />
-                            <field name="company_id"/>
-                            <field name="company_partner_id"/>
+                            <field name="company_id" invisible="1"/>
                             <field name="is_tech_specs"/>
                             <field name="is_quality"/>
                             <field name="is_price"/>
