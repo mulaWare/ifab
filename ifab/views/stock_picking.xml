@@ -24,7 +24,7 @@
                             </div>
                         </group>
                         <group name="evaluation" string="Evaluación Recepción de Insumos" attrs="{'invisible': [('is_internal_picking','=',True)]}">
-                            <field name="is_internal_picking" />
+                            <field name="is_internal_picking" invisible="1"/>
                             <field name="company_id" invisible="1"/>
                             <field name="is_tech_specs"/>
                             <field name="is_quality"/>
@@ -33,8 +33,8 @@
                             <field name="is_delivery"/>
                             <field name="is_ok" widget="radio"
                             options="{'horizontal': true}"/>
-                            <field name="is_verification"/>
-                            <field name="is_date"/>
+                            <field name="is_verification" readonly="1"/>
+                            <field name="is_date" readonly="1"/>
                         </group>
                     </group>
               </xpath>
