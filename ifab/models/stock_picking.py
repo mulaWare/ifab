@@ -30,10 +30,8 @@ class Picking(models.Model):
     @api.onchange('is_ok')
     def _is_verification(self):
         if self.is_ok:
-            res = self.write({
-                             'is_verification':self.env.user.id,
-                             'is_date' : fields.Datetime.now(),
-                            })
+            self.is_verification = self.env.user.id
+            self.is_date = fields.Datetime.now()
             return
 
 
@@ -49,5 +47,5 @@ class Picking(models.Model):
     is_delivery = fields.Boolean(string='Is Delivery time ok ?', states=READONLY_STATES)
     is_ok = fields.Selection(string='Is authorized ?', states=READONLY_STATES,
         selection=[('ok', 'Ok'), ('no', 'No')],)
-    is_verification = fields.Many2one('res.users',string="Verification Responsible",)
-    is_date = fields.Date(string="Verification Date",)
+    is_verification = fields.Many2one('res.users',string="Verification Responsible",store=True)
+    is_date = fields.Date(string="Verification Date",store=True)
