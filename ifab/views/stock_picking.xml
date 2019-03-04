@@ -33,8 +33,8 @@
                             <field name="is_delivery"/>
                             <field name="is_ok" widget="radio"
                             options="{'horizontal': true}"/>
-                            <field name="is_verification"/>
-                            <field name="is_date" />
+                            <field name="is_verification" options="{'no_create': True, 'no_create_edit':True, 'no_open':True, 'no_quick_create': True,}"/>
+                            <field name="is_date" options="{'no_create': True, 'no_create_edit':True, 'no_open':True, 'no_quick_create': True,}" />
                         </group>
                     </group>
               </xpath>
