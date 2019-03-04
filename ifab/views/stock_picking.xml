@@ -34,7 +34,7 @@
                             <field name="is_ok" widget="radio"
                             options="{'horizontal': true}"/>
                             <field name="is_verification" readonly="1"/>
-                            <field name="is_date" readonly="1"/>
+                            <field name="is_date" readonly="1" />
                         </group>
                     </group>
               </xpath>
