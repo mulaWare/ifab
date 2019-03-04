@@ -441,7 +441,7 @@ class MaterialPurchaseRequisition(models.Model):
         'cancel': [('readonly', True)],
     }
 
-    sequence = fields.Char(string='Sequence', readonly=True,copy =False)
+    sequence = fields.Char(string='Sequence', copy =False)
     employee_id = fields.Many2one('hr.employee',string="Employee",required=True, states=READONLY_STATES,)
     department_id = fields.Many2one('hr.department',string="Department",required=True, states=READONLY_STATES, related='employee_id.department_id', readonly=1)
     stock_dept_id = fields.Many2one('hr.department',string="Stock",required=True,states=READONLY_STATES, default=lambda self: self.env['hr.department'].search([('name', '=', 'Almacén')], limit=1).id,readonly=1)
