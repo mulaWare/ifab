@@ -30,8 +30,8 @@ class Picking(models.Model):
     @api.onchange('is_ok')
     def _is_verification(self):
         if self.is_ok:
-            self.is_verification = self.env.user.id,
-            self.is_date = date.datetime.now(),
+            self.is_verification = self.env.user.id
+            self.is_date = fields.Datetime.now()
             return
 
 
