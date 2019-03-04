@@ -403,6 +403,17 @@ class MaterialPurchaseRequisition(models.Model):
         self.destination_location_id = self.employee_id.destination_location_id
 
     @api.multi
+    @api.onchange('requisition_deadline_date')
+    def onchange_deadline(self):
+        res = {}
+        if not self.requisition_deadline_date:
+            return res
+        else:
+            if self.requisition_deadline_date < fields.Datetime.now():
+                res = self.requisition_deadline_date = False
+                return res
+
+    @api.multi
     @api.onchange('project_id')
     def onchange_project_id(self):
         res = {}
