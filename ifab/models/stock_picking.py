@@ -31,7 +31,7 @@ class Picking(models.Model):
     def _is_verification(self):
         if self.is_ok:
             self.is_verification = self.env.user.id,
-            self.is_date' = date.datetime.now(),
+            self.is_date = date.datetime.now(),
             return
 
 
