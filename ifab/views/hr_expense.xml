@@ -1,8 +1,43 @@
   <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-
-
-
-        <menuitem id="menu_hr_expense_expenses_to_submit" sequence="4" parent="menu_hr_expense_my_expenses" action="hr_expense_actions_unsubmitted"/>
-
+        <record id="view_hr_expense_filter" model="ir.ui.view">
+            <field name="name">hr.expense.filter</field>
+            <field name="model">hr.expense</field>
+            <field name="arch" type="xml">
+                <search string="Expense">
+                    <field name="name" string="Expenses" />
+                    <field name="date"/>
+                    <field name="employee_id"/>
+                    <field name="product_id"/>
+                    <field name="analytic_account_id" groups="analytic.group_analytic_accounting"/>
+                    <filter string="My Team Expenses" name="my_team_expenses" domain="[('employee_id.parent_id.user_id', '=', uid)]" groups="hr_expense.group_hr_expense_manager" help="Expenses of Your Team Member"/>
+                    <filter string="My Expenses" name="my_expenses" domain="[('employee_id.user_id', '=', uid)]"/>
+                    <separator />
+                    <filter domain="[('sheet_id', '=', False)]" string="To report" name="no_report"/>
+                    <filter domain="[('sheet_id', '!=', False)]" string="Reported" name="submitted" help="Confirmed Expenses"/>
+                    <filter domain="[('state', '=', 'refused')]" string="Refused" name="refused" help="Refused Expenses"/>
+                    <filter domain="['|', ('state', '=', 'approved'), ('state', '=', 'done')]" string="Approved" name="approved" help="Actual expense sheets, not the refused ones"/>
+                    <separator />
+                    <filter domain="[('employee_id.active', '=', False)]" string="Former Employees" name="inactive" groups="hr_expense.group_hr_expense_user,hr_expense.group_hr_expense_manager"/>
+                    <separator/>
+                    <filter string="Late Activities" name="activities_overdue"
+                        domain="[('activity_ids.date_deadline', '&lt;', context_today().strftime('%Y-%m-%d'))]"
+                        help="Show all records which has next action date is before today"/>
+                    <filter string="Today Activities" name="activities_today"
+                        domain="[('activity_ids.date_deadline', '=', context_today().strftime('%Y-%m-%d'))]"/>
+                    <filter string="Future Activities" name="activities_upcoming_all"
+                            domain="[('activity_ids.date_deadline', '&gt;', context_today().strftime('%Y-%m-%d'))
+                            ]"/>
+                    <group expand="0" string="Group By">
+                        <filter string="Report" name="report" domain="[]" context="{'group_by': 'sheet_id'}"/>
+                        <filter string="Employee" name="employee" domain="[]" context="{'group_by': 'employee_id'}"/>
+                        <filter string="Company" name="company" domain="[]" context="{'group_by': 'company_id'}" groups="base.group_multi_company"/>
+                        <filter string="Product" name="product" domain="[]" context="{'group_by': 'product_id'}"/>
+                        <filter string="Analytic Account" name="analyticacc" domain="[]" context="{'group_by': 'analytic_account_id'}" groups="analytic.group_analytic_accounting"/>
+                        <filter string="Date" name="expensesmonth" domain="[]" context="{'group_by': 'date'}" help="Expense Date"/>
+                        <filter string="Status" name="status" domain="[]" context="{'group_by': 'state'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
 </odoo>
